@@ -1,0 +1,24 @@
+{
+  "roles": [
+    {
+      "equipo": "Altar",
+      "rol": "Servidor"
+    },
+    {
+      "equipo": "Altar",
+      "rol": "Coordinador"
+    },
+    {
+      "equipo": "Multimedia",
+      "rol": "Camara"
+    },
+    {
+      "equipo": "Multimedia",
+      "rol": "Proyeccion"
+    },
+    {
+      "equipo": "Multimedia",
+      "rol": "Sonido"
+    }
+  ]
+}

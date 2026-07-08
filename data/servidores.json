@@ -1,0 +1,18 @@
+{
+  "servidores": [
+    {
+      "id": "ana-lopez-altar",
+      "primerNombre": "Ana",
+      "primerApellido": "Lopez",
+      "equipo": "Altar",
+      "rol": "Servidor"
+    },
+    {
+      "id": "carlos-mendez-multimedia",
+      "primerNombre": "Carlos",
+      "primerApellido": "Mendez",
+      "equipo": "Multimedia",
+      "rol": "Camara"
+    }
+  ]
+}
