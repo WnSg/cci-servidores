@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cci-servicio-worker",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-08",
+  "vars": {
+    "GITHUB_OWNER": "TU_USUARIO_O_ORG",
+    "GITHUB_REPO": "cci-servidores",
+    "GITHUB_BRANCH": "main",
+    "ALLOWED_ORIGIN": "https://TU_USUARIO.github.io",
+    "COMMITTER_NAME": "CCI Servicio Bot",
+    "COMMITTER_EMAIL": "cci-servicio@example.com"
+  }
+}
