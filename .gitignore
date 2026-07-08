@@ -1,1 +1,8 @@
-AGENTS.mdAGENTS.md
+AGENTS.md
+.agents/
+
+node_modules/
+worker/node_modules/
+worker/.wrangler/
+
+.DS_Store
