@@ -1,7 +1,6 @@
 (function () {
   const form = document.querySelector("#availabilityForm");
   const serverSelect = document.querySelector("#serverSelect");
-  const newServerToggle = document.querySelector("#newServerToggle");
   const newServerFields = document.querySelector("#newServerFields");
   const firstNameInput = document.querySelector("#firstName");
   const lastNameInput = document.querySelector("#lastName");
@@ -23,7 +22,7 @@
     await loadBaseData();
     renderSundays(monthInput.value);
 
-    newServerToggle.addEventListener("change", handleNewServerToggle);
+    serverSelect.addEventListener("change", handleServerSelectChange);
     monthInput.addEventListener("change", function () {
       renderSundays(monthInput.value);
     });
@@ -61,6 +60,11 @@
       option.textContent = server.primerNombre + " " + server.primerApellido + " - " + server.equipo + " / " + server.rol;
       serverSelect.appendChild(option);
     });
+
+    const newServerOption = document.createElement("option");
+    newServerOption.value = "__nuevo__";
+    newServerOption.textContent = "+ Agregar servidor";
+    serverSelect.appendChild(newServerOption);
   }
 
   function populateTeamsAndRoles() {
@@ -96,10 +100,9 @@
     roleSelect.value = "";
   }
 
-  function handleNewServerToggle() {
-    const addingNewServer = newServerToggle.checked;
+  function handleServerSelectChange() {
+    const addingNewServer = serverSelect.value === "__nuevo__";
     newServerFields.hidden = !addingNewServer;
-    serverSelect.required = !addingNewServer;
     firstNameInput.required = addingNewServer;
     lastNameInput.required = addingNewServer;
     teamSelect.required = addingNewServer;
@@ -183,12 +186,13 @@
     showStatus("Registro preparado. En el siguiente paso se conectara con el Cloudflare Worker.");
     form.reset();
     monthInput.value = payload.mes;
+    handleServerSelectChange();
     newServerFields.hidden = true;
     renderSundays(monthInput.value);
   }
 
   function buildPayload() {
-    const isNewServer = newServerToggle.checked;
+    const isNewServer = serverSelect.value === "__nuevo__";
     const unavailableSundays = Array.from(document.querySelectorAll("input[name='unavailableSundays']:checked")).map(function (input) {
       return input.value;
     });
