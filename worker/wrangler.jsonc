@@ -3,11 +3,13 @@
   "name": "cci-servicio-worker",
   "main": "src/index.js",
   "compatibility_date": "2026-07-08",
+  "workers_dev": true,
+  "preview_urls": false,
   "vars": {
-    "GITHUB_OWNER": "TU_USUARIO_O_ORG",
+    "GITHUB_OWNER": "WnSg",
     "GITHUB_REPO": "cci-servidores",
     "GITHUB_BRANCH": "main",
-    "ALLOWED_ORIGIN": "https://TU_USUARIO.github.io",
+    "ALLOWED_ORIGIN": "https://wnsg.github.io,http://127.0.0.1:5500,http://localhost:5500",
     "COMMITTER_NAME": "CCI Servicio Bot",
     "COMMITTER_EMAIL": "cci-servicio@example.com"
   }
