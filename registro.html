@@ -29,6 +29,9 @@
         <fieldset>
           <legend>Servidor</legend>
 
+          <label for="registrationCode">Codigo de registro</label>
+          <input id="registrationCode" name="codigoRegistro" type="password" autocomplete="off" required>
+
           <label for="serverSelect">Nombre</label>
           <select id="serverSelect" name="serverId" required>
             <option value="">Selecciona tu nombre</option>
@@ -61,6 +64,9 @@
 
           <label for="maxServices">Cuantas veces puedes servir</label>
           <input id="maxServices" name="maxServices" type="number" min="1" max="5" value="2" required>
+
+          <label for="observations">Observaciones</label>
+          <textarea id="observations" name="observaciones" rows="4" placeholder="Opcional"></textarea>
 
           <div class="field-group">
             <p class="field-label">Domingos en los que no puedes servir</p>

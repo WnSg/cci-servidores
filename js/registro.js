@@ -1,5 +1,7 @@
 (function () {
   const form = document.querySelector("#availabilityForm");
+  const submitButton = form.querySelector("button[type='submit']");
+  const registrationCodeInput = document.querySelector("#registrationCode");
   const serverSelect = document.querySelector("#serverSelect");
   const newServerFields = document.querySelector("#newServerFields");
   const firstNameInput = document.querySelector("#firstName");
@@ -8,8 +10,10 @@
   const roleSelect = document.querySelector("#roleSelect");
   const monthInput = document.querySelector("#serviceMonth");
   const maxServicesInput = document.querySelector("#maxServices");
+  const observationsInput = document.querySelector("#observations");
   const sundaysGrid = document.querySelector("#sundaysGrid");
   const statusMessage = document.querySelector("#statusMessage");
+  const defaultSubmitText = submitButton.textContent;
 
   const state = {
     servidores: [],
@@ -54,6 +58,12 @@
   }
 
   function populateServers() {
+    serverSelect.innerHTML = "";
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Selecciona tu nombre";
+    serverSelect.appendChild(placeholder);
+
     state.servidores.forEach(function (server) {
       const option = document.createElement("option");
       option.value = server.id;
@@ -172,7 +182,7 @@
     }).format(date);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const payload = buildPayload();
@@ -182,22 +192,43 @@
       return;
     }
 
-    console.info("Registro listo para enviar al Worker:", payload);
-    showStatus("Registro preparado. En el siguiente paso se conectara con el Cloudflare Worker.");
-    form.reset();
-    monthInput.value = payload.mes;
-    handleServerSelectChange();
-    newServerFields.hidden = true;
-    renderSundays(monthInput.value);
+    setSavingState(true);
+
+    try {
+      const response = await fetch(window.CCI_CONFIG.workerUrl + "/api/registro-mensual", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = await readResponseJson(response);
+
+      if (!response.ok || !result.ok) {
+        showStatus(result.error || "No se pudo guardar el registro.", true);
+        return;
+      }
+
+      showStatus("Registro guardado correctamente.");
+      form.reset();
+      monthInput.value = getCurrentMonth();
+      handleServerSelectChange();
+      renderSundays(monthInput.value);
+      await reloadServers();
+    } catch (error) {
+      showStatus("No se pudo conectar con el servidor. Intenta nuevamente en unos minutos.", true);
+    } finally {
+      setSavingState(false);
+    }
   }
 
   function buildPayload() {
     const isNewServer = serverSelect.value === "__nuevo__";
-    const unavailableSundays = Array.from(document.querySelectorAll("input[name='unavailableSundays']:checked")).map(function (input) {
+    const unavailableDates = Array.from(document.querySelectorAll("input[name='unavailableSundays']:checked")).map(function (input) {
       return input.value;
     });
 
-    if (!monthInput.value || !maxServicesInput.value) {
+    if (!registrationCodeInput.value.trim() || !monthInput.value || !serverSelect.value || !maxServicesInput.value) {
       return null;
     }
 
@@ -207,30 +238,58 @@
       }
 
       return {
+        codigoRegistro: registrationCodeInput.value.trim(),
         mes: monthInput.value,
-        servidorNuevo: true,
-        servidor: {
+        servidorExistenteId: null,
+        nuevoServidor: {
           primerNombre: firstNameInput.value.trim(),
           primerApellido: lastNameInput.value.trim(),
           equipo: teamSelect.value,
           rol: roleSelect.value
         },
-        cantidadServicios: Number(maxServicesInput.value),
-        domingosNoDisponibles: unavailableSundays
+        vecesPuedeServir: Number(maxServicesInput.value),
+        fechasNoPuede: unavailableDates,
+        observaciones: observationsInput.value.trim()
       };
     }
 
-    if (!serverSelect.value) {
-      return null;
-    }
-
     return {
+      codigoRegistro: registrationCodeInput.value.trim(),
       mes: monthInput.value,
-      servidorNuevo: false,
-      servidorId: serverSelect.value,
-      cantidadServicios: Number(maxServicesInput.value),
-      domingosNoDisponibles: unavailableSundays
+      servidorExistenteId: serverSelect.value,
+      nuevoServidor: null,
+      vecesPuedeServir: Number(maxServicesInput.value),
+      fechasNoPuede: unavailableDates,
+      observaciones: observationsInput.value.trim()
     };
+  }
+
+  async function reloadServers() {
+    try {
+      const servidores = await fetchJson(window.CCI_CONFIG.dataPaths.servidores + "?t=" + Date.now());
+      state.servidores = servidores.servidores || [];
+      populateServers();
+    } catch (error) {
+      showStatus("Registro guardado, pero no se pudo refrescar la lista de servidores.", true);
+    }
+  }
+
+  async function readResponseJson(response) {
+    try {
+      return await response.json();
+    } catch (error) {
+      return { ok: false, error: "El servidor respondio con un formato inesperado." };
+    }
+  }
+
+  function setSavingState(isSaving) {
+    submitButton.disabled = isSaving;
+    submitButton.textContent = isSaving ? "Guardando..." : defaultSubmitText;
+  }
+
+  function getCurrentMonth() {
+    const now = new Date();
+    return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
   }
 
   function showStatus(message, isError) {

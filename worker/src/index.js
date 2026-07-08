@@ -2,8 +2,6 @@ const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8"
 };
 
-const NEW_SERVER_VALUE = "__nuevo__";
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -83,7 +81,7 @@ async function handleRegistroMensual(request, env) {
   return jsonResponse({
     ok: true,
     servidorId: serverResult.servidor.id,
-    servidorNuevo: serverResult.added,
+    servidorAgregado: serverResult.added,
     mes: validation.payload.mes
   }, 200, env, request);
 }
@@ -101,6 +99,11 @@ function validatePayload(payload, env) {
     return invalid("El cuerpo debe ser JSON valido");
   }
 
+  const contractValidation = validateContractKeys(payload);
+  if (!contractValidation.ok) {
+    return invalid(contractValidation.error);
+  }
+
   if (!env.REGISTRATION_CODE || payload.codigoRegistro !== env.REGISTRATION_CODE) {
     return invalid("Codigo de registro invalido", 401);
   }
@@ -109,16 +112,16 @@ function validatePayload(payload, env) {
     return invalid("El mes debe tener formato YYYY-MM");
   }
 
-  const maxServices = Number(payload.cantidadServicios);
-  if (!Number.isInteger(maxServices) || maxServices < 1 || maxServices > 5) {
+  const vecesPuedeServir = Number(payload.vecesPuedeServir);
+  if (!Number.isInteger(vecesPuedeServir) || vecesPuedeServir < 1 || vecesPuedeServir > 5) {
     return invalid("La cantidad de servicios debe ser un numero entre 1 y 5");
   }
 
-  if (!Array.isArray(payload.domingosNoDisponibles)) {
-    return invalid("domingosNoDisponibles debe ser una lista");
+  if (!Array.isArray(payload.fechasNoPuede)) {
+    return invalid("fechasNoPuede debe ser una lista");
   }
 
-  const hasInvalidDate = payload.domingosNoDisponibles.some(function (date) {
+  const hasInvalidDate = payload.fechasNoPuede.some(function (date) {
     return typeof date !== "string" || !date.startsWith(payload.mes + "-") || !isValidDate(date);
   });
 
@@ -126,18 +129,36 @@ function validatePayload(payload, env) {
     return invalid("Todos los domingos no disponibles deben pertenecer al mes indicado");
   }
 
-  const selectedServerId = typeof payload.servidorId === "string" ? payload.servidorId.trim() : "";
-  const isNewServer = payload.servidorNuevo === true || selectedServerId === NEW_SERVER_VALUE;
+  const servidorExistenteId = typeof payload.servidorExistenteId === "string" ? payload.servidorExistenteId.trim() : "";
+  const hasExistingServer = Boolean(servidorExistenteId);
+  const hasNewServer = payload.nuevoServidor !== null && typeof payload.nuevoServidor === "object";
 
-  if (isNewServer) {
-    if (!payload.servidor || typeof payload.servidor !== "object") {
-      return invalid("Faltan los datos del servidor nuevo");
+  if (payload.servidorExistenteId !== null && typeof payload.servidorExistenteId !== "string") {
+    return invalid("servidorExistenteId debe ser texto o null");
+  }
+
+  if (typeof payload.observaciones !== "string") {
+    return invalid("observaciones debe ser texto");
+  }
+
+  if (hasExistingServer && hasNewServer) {
+    return invalid("Envia servidorExistenteId o nuevoServidor, no ambos");
+  }
+
+  if (!hasExistingServer && !hasNewServer) {
+    return invalid("Debes seleccionar un servidor existente o agregar uno nuevo");
+  }
+
+  if (hasNewServer) {
+    const serverContractValidation = validateNewServerKeys(payload.nuevoServidor);
+    if (!serverContractValidation.ok) {
+      return invalid(serverContractValidation.error);
     }
 
-    const primerNombre = cleanText(payload.servidor.primerNombre);
-    const primerApellido = cleanText(payload.servidor.primerApellido);
-    const equipo = cleanText(payload.servidor.equipo);
-    const rol = cleanText(payload.servidor.rol);
+    const primerNombre = cleanText(payload.nuevoServidor.primerNombre);
+    const primerApellido = cleanText(payload.nuevoServidor.primerApellido);
+    const equipo = cleanText(payload.nuevoServidor.equipo);
+    const rol = cleanText(payload.nuevoServidor.rol);
 
     if (!primerNombre || !primerApellido || !equipo || !rol) {
       return invalid("El servidor nuevo requiere primer nombre, primer apellido, equipo y rol");
@@ -147,27 +168,24 @@ function validatePayload(payload, env) {
       ok: true,
       payload: {
         mes: payload.mes,
-        servidorNuevo: true,
-        servidorId: NEW_SERVER_VALUE,
-        servidor: { primerNombre, primerApellido, equipo, rol },
-        cantidadServicios: maxServices,
-        domingosNoDisponibles: uniqueStrings(payload.domingosNoDisponibles)
+        servidorExistenteId: null,
+        nuevoServidor: { primerNombre, primerApellido, equipo, rol },
+        vecesPuedeServir,
+        fechasNoPuede: uniqueStrings(payload.fechasNoPuede),
+        observaciones: cleanText(payload.observaciones)
       }
     };
-  }
-
-  if (!selectedServerId) {
-    return invalid("Debes seleccionar un servidor existente o agregar uno nuevo");
   }
 
   return {
     ok: true,
     payload: {
       mes: payload.mes,
-      servidorNuevo: false,
-      servidorId: selectedServerId,
-      cantidadServicios: maxServices,
-      domingosNoDisponibles: uniqueStrings(payload.domingosNoDisponibles)
+      servidorExistenteId,
+      nuevoServidor: null,
+      vecesPuedeServir,
+      fechasNoPuede: uniqueStrings(payload.fechasNoPuede),
+      observaciones: cleanText(payload.observaciones)
     }
   };
 }
@@ -176,10 +194,59 @@ function invalid(error, status) {
   return { ok: false, error, status: status || 400 };
 }
 
+function validateContractKeys(payload) {
+  const allowedKeys = [
+    "codigoRegistro",
+    "mes",
+    "servidorExistenteId",
+    "nuevoServidor",
+    "vecesPuedeServir",
+    "fechasNoPuede",
+    "observaciones"
+  ];
+  const payloadKeys = Object.keys(payload);
+  const unexpectedKeys = payloadKeys.filter(function (key) {
+    return !allowedKeys.includes(key);
+  });
+  const missingKeys = allowedKeys.filter(function (key) {
+    return !Object.prototype.hasOwnProperty.call(payload, key);
+  });
+
+  if (unexpectedKeys.length > 0) {
+    return { ok: false, error: "El payload contiene campos no permitidos: " + unexpectedKeys.join(", ") };
+  }
+
+  if (missingKeys.length > 0) {
+    return { ok: false, error: "Faltan campos requeridos: " + missingKeys.join(", ") };
+  }
+
+  return { ok: true };
+}
+
+function validateNewServerKeys(nuevoServidor) {
+  const allowedKeys = ["primerNombre", "primerApellido", "equipo", "rol"];
+  const unexpectedKeys = Object.keys(nuevoServidor).filter(function (key) {
+    return !allowedKeys.includes(key);
+  });
+  const missingKeys = allowedKeys.filter(function (key) {
+    return !Object.prototype.hasOwnProperty.call(nuevoServidor, key);
+  });
+
+  if (unexpectedKeys.length > 0) {
+    return { ok: false, error: "nuevoServidor contiene campos no permitidos: " + unexpectedKeys.join(", ") };
+  }
+
+  if (missingKeys.length > 0) {
+    return { ok: false, error: "Faltan campos en nuevoServidor: " + missingKeys.join(", ") };
+  }
+
+  return { ok: true };
+}
+
 function resolveServidor(payload, servidores) {
-  if (!payload.servidorNuevo) {
+  if (payload.servidorExistenteId) {
     const existing = servidores.find(function (server) {
-      return server.id === payload.servidorId;
+      return server.id === payload.servidorExistenteId;
     });
 
     if (!existing) {
@@ -189,9 +256,9 @@ function resolveServidor(payload, servidores) {
     return { ok: true, servidor: existing, added: false };
   }
 
-  const id = createServerId(payload.servidor);
+  const id = createServerId(payload.nuevoServidor);
   const existing = servidores.find(function (server) {
-    return server.id === id || sameServer(server, payload.servidor);
+    return server.id === id || sameServer(server, payload.nuevoServidor);
   });
 
   if (existing) {
@@ -203,10 +270,10 @@ function resolveServidor(payload, servidores) {
     added: true,
     servidor: {
       id,
-      primerNombre: payload.servidor.primerNombre,
-      primerApellido: payload.servidor.primerApellido,
-      equipo: payload.servidor.equipo,
-      rol: payload.servidor.rol
+      primerNombre: payload.nuevoServidor.primerNombre,
+      primerApellido: payload.nuevoServidor.primerApellido,
+      equipo: payload.nuevoServidor.equipo,
+      rol: payload.nuevoServidor.rol
     }
   };
 }
@@ -218,8 +285,9 @@ function buildDisponibilidadRegistro(payload, servidor) {
     primerApellido: servidor.primerApellido,
     equipo: servidor.equipo,
     rol: servidor.rol,
-    cantidadServicios: payload.cantidadServicios,
-    domingosNoDisponibles: payload.domingosNoDisponibles,
+    vecesPuedeServir: payload.vecesPuedeServir,
+    fechasNoPuede: payload.fechasNoPuede,
+    observaciones: payload.observaciones,
     actualizadoEn: new Date().toISOString()
   };
 }

@@ -1,5 +1,5 @@
 window.CCI_CONFIG = {
-  workerUrl: "",
+  workerUrl: "https://cci-servicio-worker.cci-wsdev.workers.dev",
   dataPaths: {
     servidores: "data/servidores.json",
     roles: "data/roles.json"
