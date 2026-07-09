@@ -1,4 +1,20 @@
 {
   "mes": "2026-08",
-  "registros": []
+  "registros": [
+    {
+      "servidorId": "wolfran-silva-multimedia-sonido",
+      "primerNombre": "Wolfran",
+      "primerApellido": "Silva",
+      "equipo": "Multimedia",
+      "rol": "Sonido",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-08-02",
+        "2026-08-09",
+        "2026-08-16"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-07-09T01:01:25.258Z"
+    }
+  ]
 }
