@@ -50,7 +50,9 @@
   }
 
   async function fetchJson(path) {
-    const response = await fetch(path);
+    const response = await fetch(withCacheBuster(path), {
+      cache: "no-store"
+    });
     if (!response.ok) {
       throw new Error("No se pudo cargar " + path);
     }
@@ -266,7 +268,7 @@
 
   async function reloadServers() {
     try {
-      const servidores = await fetchJson(window.CCI_CONFIG.dataPaths.servidores + "?t=" + Date.now());
+      const servidores = await fetchJson(window.CCI_CONFIG.dataPaths.servidores);
       state.servidores = servidores.servidores || [];
       populateServers();
     } catch (error) {
@@ -280,6 +282,11 @@
     } catch (error) {
       return { ok: false, error: "El servidor respondio con un formato inesperado." };
     }
+  }
+
+  function withCacheBuster(path) {
+    const separator = path.includes("?") ? "&" : "?";
+    return path + separator + "v=" + Date.now();
   }
 
   function setSavingState(isSaving) {
