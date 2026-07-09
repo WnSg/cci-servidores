@@ -13,6 +13,13 @@
       "primerApellido": "Mendez",
       "equipo": "Multimedia",
       "rol": "Camara"
+    },
+    {
+      "id": "wolfran-silva-multimedia-sonido",
+      "primerNombre": "Wolfran",
+      "primerApellido": "Silva",
+      "equipo": "Multimedia",
+      "rol": "Sonido"
     }
   ]
 }
