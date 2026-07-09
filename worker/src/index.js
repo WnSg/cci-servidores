@@ -7,10 +7,17 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders(env, request)
-      });
+      return handleOptions(request, env);
+    }
+
+    if (!isCorsAllowed(request, env)) {
+      return jsonResponse(
+        { ok: false, error: "Origen no permitido" },
+        403,
+        env,
+        request,
+        { includeBlockedOrigin: true }
+      );
     }
 
     try {
@@ -484,28 +491,68 @@ function encodeBase64(value) {
   return btoa(binary);
 }
 
-function jsonResponse(body, status, env, request) {
+function handleOptions(request, env) {
+  if (!isCorsAllowed(request, env)) {
+    return jsonResponse(
+      { ok: false, error: "Origen no permitido" },
+      403,
+      env,
+      request,
+      { includeBlockedOrigin: true }
+    );
+  }
+
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders(env, request)
+  });
+}
+
+function jsonResponse(body, status, env, request, options) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...JSON_HEADERS,
-      ...corsHeaders(env, request)
+      ...corsHeaders(env, request, options)
     }
   });
 }
 
-function corsHeaders(env, request) {
+function corsHeaders(env, request, options) {
   const origin = request.headers.get("origin") || "";
-  const allowedOrigin = env.ALLOWED_ORIGIN || "";
+  const allowedOrigins = getAllowedOrigins(env);
+  const includeBlockedOrigin = Boolean(options && options.includeBlockedOrigin);
   const headers = {
-    "access-control-allow-methods": "GET,POST,OPTIONS",
-    "access-control-allow-headers": "content-type",
-    "vary": "Origin"
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin"
   };
 
-  if (allowedOrigin === "*" || origin === allowedOrigin) {
-    headers["access-control-allow-origin"] = allowedOrigin === "*" ? "*" : origin;
+  if (origin && (allowedOrigins.includes(origin) || includeBlockedOrigin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  } else if (!origin && allowedOrigins.length === 1) {
+    headers["Access-Control-Allow-Origin"] = allowedOrigins[0];
   }
 
   return headers;
+}
+
+function isCorsAllowed(request, env) {
+  const origin = request.headers.get("origin");
+
+  if (!origin) {
+    return true;
+  }
+
+  return getAllowedOrigins(env).includes(origin);
+}
+
+function getAllowedOrigins(env) {
+  return String(env.ALLOWED_ORIGIN || "")
+    .split(",")
+    .map(function (origin) {
+      return origin.trim();
+    })
+    .filter(Boolean);
 }
