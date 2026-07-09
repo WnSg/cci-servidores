@@ -292,13 +292,34 @@ textarea {
 }
 
 .status-message {
-  min-height: 1.5rem;
   margin: 1rem 0 0;
-  color: var(--primary-dark);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  background: transparent;
   font-weight: 700;
 }
 
+.status-message:empty {
+  display: none;
+}
+
+.status-message.success {
+  border-color: #b7dbc8;
+  background: #eaf7ef;
+  color: var(--primary-dark);
+}
+
+.status-message.warning {
+  border-color: #e5c56d;
+  background: #fff7df;
+  color: #62480f;
+}
+
 .status-message.error {
+  border-color: #e4a5a5;
+  background: #fff0f0;
   color: var(--danger);
 }
 

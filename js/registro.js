@@ -45,7 +45,7 @@
       populateServers();
       populateTeamsAndRoles();
     } catch (error) {
-      showStatus("No se pudieron cargar los datos iniciales. Revisa los archivos JSON.", true);
+      showStatus("No se pudieron cargar los datos iniciales. Revisa los archivos JSON.", "error");
     }
   }
 
@@ -190,7 +190,7 @@
     const payload = buildPayload();
 
     if (!payload) {
-      showStatus("Completa la informacion requerida antes de guardar.", true);
+      showStatus("Completa la informacion requerida antes de guardar.", "error");
       return;
     }
 
@@ -207,11 +207,11 @@
       const result = await readResponseJson(response);
 
       if (!response.ok || !result.ok) {
-        showStatus(result.error || "No se pudo guardar el registro.", true);
+        showStatus(result.error || "No se pudo guardar el registro.", response.status === 409 ? "warning" : "error");
         return;
       }
 
-      showStatus("Registro guardado correctamente.");
+      showStatus(getSuccessMessage(payload, result), "success");
       const serverSaved = buildSavedServer(payload, result);
       form.reset();
       monthInput.value = getCurrentMonth();
@@ -219,7 +219,7 @@
       renderSundays(monthInput.value);
       await reloadServers(serverSaved);
     } catch (error) {
-      showStatus("No se pudo conectar con el servidor. Intenta nuevamente en unos minutos.", true);
+      showStatus("No se pudo conectar con el servidor. Intenta nuevamente en unos minutos.", "error");
     } finally {
       setSavingState(false);
     }
@@ -281,8 +281,16 @@
         populateServers();
         return;
       }
-      showStatus("Registro guardado, pero no se pudo refrescar la lista de servidores.", true);
+      showStatus("Registro guardado, pero no se pudo refrescar la lista de servidores.", "warning");
     }
+  }
+
+  function getSuccessMessage(payload, result) {
+    if (payload.nuevoServidor && result.servidorAgregado === true) {
+      return "Servidor agregado y disponibilidad guardada correctamente.";
+    }
+
+    return "Disponibilidad guardada correctamente.";
   }
 
   function buildSavedServer(payload, result) {
@@ -338,8 +346,10 @@
     return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
   }
 
-  function showStatus(message, isError) {
+  function showStatus(message, type) {
+    const statusType = type || "success";
     statusMessage.textContent = message;
-    statusMessage.classList.toggle("error", Boolean(isError));
+    statusMessage.classList.remove("success", "warning", "error");
+    statusMessage.classList.add(statusType);
   }
 })();
