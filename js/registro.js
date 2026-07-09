@@ -212,11 +212,12 @@
       }
 
       showStatus("Registro guardado correctamente.");
+      const serverSaved = buildSavedServer(payload, result);
       form.reset();
       monthInput.value = getCurrentMonth();
       handleServerSelectChange();
       renderSundays(monthInput.value);
-      await reloadServers();
+      await reloadServers(serverSaved);
     } catch (error) {
       showStatus("No se pudo conectar con el servidor. Intenta nuevamente en unos minutos.", true);
     } finally {
@@ -266,14 +267,52 @@
     };
   }
 
-  async function reloadServers() {
+  async function reloadServers(serverToKeep) {
     try {
       const servidores = await fetchJson(window.CCI_CONFIG.dataPaths.servidores);
       state.servidores = servidores.servidores || [];
+      if (serverToKeep) {
+        upsertLocalServer(serverToKeep);
+      }
       populateServers();
     } catch (error) {
+      if (serverToKeep) {
+        upsertLocalServer(serverToKeep);
+        populateServers();
+        return;
+      }
       showStatus("Registro guardado, pero no se pudo refrescar la lista de servidores.", true);
     }
+  }
+
+  function buildSavedServer(payload, result) {
+    if (!payload.nuevoServidor || !result.servidorId) {
+      return null;
+    }
+
+    return {
+      id: result.servidorId,
+      primerNombre: payload.nuevoServidor.primerNombre,
+      primerApellido: payload.nuevoServidor.primerApellido,
+      equipo: payload.nuevoServidor.equipo,
+      rol: payload.nuevoServidor.rol
+    };
+  }
+
+  function upsertLocalServer(server) {
+    const existingIndex = state.servidores.findIndex(function (item) {
+      return item.id === server.id;
+    });
+
+    if (existingIndex >= 0) {
+      state.servidores[existingIndex] = server;
+    } else {
+      state.servidores.push(server);
+    }
+
+    state.servidores.sort(function (a, b) {
+      return a.primerNombre.localeCompare(b.primerNombre, "es") || a.primerApellido.localeCompare(b.primerApellido, "es");
+    });
   }
 
   async function readResponseJson(response) {
