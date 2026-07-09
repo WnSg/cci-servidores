@@ -20,14 +20,12 @@
       "primerApellido": "Silva",
       "equipo": "Multimedia",
       "rol": "Sonido",
-      "vecesPuedeServir": 3,
+      "vecesPuedeServir": 2,
       "fechasNoPuede": [
-        "2026-08-02",
-        "2026-08-09",
-        "2026-08-16"
+        "2026-08-30"
       ],
       "observaciones": "",
-      "actualizadoEn": "2026-07-09T01:01:25.258Z"
+      "actualizadoEn": "2026-07-09T15:48:53.553Z"
     },
     {
       "servidorId": "wolfran-silva-multimedia-camara",
