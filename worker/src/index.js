@@ -52,7 +52,7 @@ async function handleRegistroMensual(request, env) {
   const serverResult = resolveServidor(validation.payload, servidoresData.servidores);
 
   if (!serverResult.ok) {
-    return jsonResponse({ ok: false, error: serverResult.error }, 400, env, request);
+    return jsonResponse({ ok: false, error: serverResult.error }, serverResult.status || 400, env, request);
   }
 
   if (serverResult.added) {
@@ -269,7 +269,11 @@ function resolveServidor(payload, servidores) {
   });
 
   if (existing) {
-    return { ok: true, servidor: existing, added: false };
+    return {
+      ok: false,
+      status: 409,
+      error: "Este servidor ya existe. Seleccionalo en la lista para registrar o actualizar su disponibilidad."
+    };
   }
 
   return {
