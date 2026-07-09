@@ -27,6 +27,13 @@
       "primerApellido": "Silva",
       "equipo": "Multimedia",
       "rol": "Sonido"
+    },
+    {
+      "id": "wolfran-silva-multimedia-camara",
+      "primerNombre": "Wolfran",
+      "primerApellido": "Silva",
+      "equipo": "Multimedia",
+      "rol": "Camara"
     }
   ]
 }
