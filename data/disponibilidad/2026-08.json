@@ -28,6 +28,19 @@
       ],
       "observaciones": "",
       "actualizadoEn": "2026-07-09T01:01:25.258Z"
+    },
+    {
+      "servidorId": "wolfran-silva-multimedia-camara",
+      "primerNombre": "Wolfran",
+      "primerApellido": "Silva",
+      "equipo": "Multimedia",
+      "rol": "Camara",
+      "vecesPuedeServir": 2,
+      "fechasNoPuede": [
+        "2026-08-30"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-07-09T15:20:16.724Z"
     }
   ]
 }
