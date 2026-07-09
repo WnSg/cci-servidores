@@ -286,7 +286,7 @@
   }
 
   function buildSavedServer(payload, result) {
-    if (!payload.nuevoServidor || !result.servidorId) {
+    if (!payload.nuevoServidor || !result.servidorId || result.servidorAgregado !== true) {
       return null;
     }
 

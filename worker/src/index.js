@@ -265,7 +265,7 @@ function resolveServidor(payload, servidores) {
 
   const id = createServerId(payload.nuevoServidor);
   const existing = servidores.find(function (server) {
-    return server.id === id || sameServer(server, payload.nuevoServidor);
+    return server.id === id || sameServerName(server, payload.nuevoServidor);
   });
 
   if (existing) {
@@ -417,11 +417,9 @@ function sortServidores(servidores) {
   });
 }
 
-function sameServer(server, input) {
+function sameServerName(server, input) {
   return normalize(server.primerNombre) === normalize(input.primerNombre) &&
-    normalize(server.primerApellido) === normalize(input.primerApellido) &&
-    normalize(server.equipo) === normalize(input.equipo) &&
-    normalize(server.rol) === normalize(input.rol);
+    normalize(server.primerApellido) === normalize(input.primerApellido);
 }
 
 function createServerId(server) {
