@@ -15,6 +15,13 @@
       "rol": "Camara"
     },
     {
+      "id": "roberto-zuniga-multimedia-sonido",
+      "primerNombre": "Roberto",
+      "primerApellido": "Zuniga",
+      "equipo": "Multimedia",
+      "rol": "Sonido"
+    },
+    {
       "id": "wolfran-silva-multimedia-sonido",
       "primerNombre": "Wolfran",
       "primerApellido": "Silva",
