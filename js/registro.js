@@ -24,6 +24,7 @@
 
   async function init() {
     await loadBaseData();
+    populateMonthOptions();
     renderSundays(monthInput.value);
 
     serverSelect.addEventListener("change", handleServerSelectChange);
@@ -214,7 +215,7 @@
       showStatus(getSuccessMessage(payload, result), "success");
       const serverSaved = buildSavedServer(payload, result);
       form.reset();
-      monthInput.value = getCurrentMonth();
+      populateMonthOptions();
       handleServerSelectChange();
       renderSundays(monthInput.value);
       await reloadServers(serverSaved);
@@ -341,9 +342,40 @@
     submitButton.textContent = isSaving ? "Guardando..." : defaultSubmitText;
   }
 
-  function getCurrentMonth() {
+  function populateMonthOptions() {
+    monthInput.innerHTML = "";
+
+    getAvailableMonths().forEach(function (month) {
+      const option = document.createElement("option");
+      option.value = month;
+      option.textContent = formatMonthLabel(month);
+      monthInput.appendChild(option);
+    });
+  }
+
+  function getAvailableMonths() {
     const now = new Date();
-    return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
+    const currentMonthIndex = now.getMonth();
+    const year = currentMonthIndex === 11 ? now.getFullYear() + 1 : now.getFullYear();
+    const startMonth = currentMonthIndex === 11 ? 0 : currentMonthIndex + 1;
+    const months = [];
+
+    for (let monthIndex = startMonth; monthIndex < 12; monthIndex += 1) {
+      months.push(year + "-" + String(monthIndex + 1).padStart(2, "0"));
+    }
+
+    return months;
+  }
+
+  function formatMonthLabel(monthValue) {
+    const parts = monthValue.split("-");
+    const date = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+    const label = new Intl.DateTimeFormat("es-HN", {
+      month: "long",
+      year: "numeric"
+    }).format(date);
+
+    return label.charAt(0).toUpperCase() + label.slice(1);
   }
 
   function showStatus(message, type) {
