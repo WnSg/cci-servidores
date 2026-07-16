@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 120" role="img" aria-labelledby="title desc">
+  <title id="title">CCI Santa Ana</title>
+  <desc id="desc">Logo para CCI Santa Ana con llama y texto CCI.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c506b"/>
+      <stop offset="0.55" stop-color="#08384d"/>
+      <stop offset="1" stop-color="#061f2c"/>
+    </linearGradient>
+    <linearGradient id="flame-main" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#fff238"/>
+      <stop offset="0.52" stop-color="#f7a51f"/>
+      <stop offset="1" stop-color="#e84b2c"/>
+    </linearGradient>
+    <linearGradient id="flame-light" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff66b"/>
+      <stop offset="1" stop-color="#f47b20"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="120" rx="18" fill="url(#bg)"/>
+  <path d="M0 78 C58 50 127 45 187 52 C242 59 284 52 320 36 L320 120 L0 120 Z" fill="#1a6f8f" opacity="0.28"/>
+  <g transform="translate(196 10)">
+    <path d="M53 1 C72 35 55 51 41 68 C31 80 34 93 45 111 C12 97 0 73 7 52 C13 31 31 22 42 13 C49 8 52 4 53 1 Z" fill="url(#flame-main)"/>
+    <path d="M29 23 C14 40 12 58 22 75 C28 85 37 92 45 111 C18 96 2 77 10 51 C14 37 20 29 29 23 Z" fill="url(#flame-light)"/>
+    <path d="M55 5 C61 32 48 46 37 60 C25 75 29 93 45 111 C32 92 37 74 47 58 C57 42 68 25 55 5 Z" fill="#fff238" opacity="0.85"/>
+    <path d="M42 42 C31 61 30 80 45 111" fill="none" stroke="#0c506b" stroke-width="3" stroke-linecap="round" opacity="0.72"/>
+  </g>
+  <text x="28" y="82" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="62" letter-spacing="1">CCI</text>
+  <text x="34" y="103" fill="#d8e6ec" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="3">SANTA ANA</text>
+</svg>
