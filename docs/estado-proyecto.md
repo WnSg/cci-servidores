@@ -59,8 +59,8 @@ Worker:
 
 Assets:
 
-- `assets/logo-cci-santa-ana.svg`: logo temporal inspirado en la referencia del logo CCI.
-- Cuando exista logo oficial en PNG, usar preferiblemente `assets/logo-cci-santa-ana.png`.
+- El frontend espera el logo oficial en `assets/logo-cci-santa-ana.png`.
+- Resolucion recomendada: `640 x 240 px`, con proporcion `8:3` y fondo transparente.
 
 ## Contrato del payload
 
@@ -150,8 +150,8 @@ Paleta aplicada:
 
 Pendiente opcional:
 
-- Reemplazar el SVG temporal por el logo oficial en PNG/SVG.
-- Recomendacion para PNG oficial: `640 x 240 px`, idealmente con fondo transparente.
+- Agregar el logo oficial en `assets/logo-cci-santa-ana.png`.
+- Recomendacion para PNG oficial: `640 x 240 px`, con proporcion `8:3` y fondo transparente.
 
 ## Pruebas manuales recomendadas antes de congelar fase 1
 

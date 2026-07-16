@@ -1,89 +1,92 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registrar disponibilidad | CCI Servicio</title>
-    <meta name="description" content="Formulario de disponibilidad mensual para servidores de CCI Santa Ana.">
-    <link rel="stylesheet" href="css/styles.css">
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Inicio CCI Servicio">
-        <img class="brand-logo" src="assets/logo-cci-santa-ana.svg" alt="CCI Santa Ana">
-        <span>
-          <strong>CCI Servicio</strong>
-          <small>Registro mensual</small>
-        </span>
-      </a>
-    </header>
 
-    <main class="page-shell">
-      <section class="form-intro" aria-labelledby="titulo-registro">
-        <p class="eyebrow">Disponibilidad mensual</p>
-        <h1 id="titulo-registro">Registra tus fechas</h1>
-        <p>La informacion se limita a nombre, equipo, rol y disponibilidad para preparar la planificacion mensual.</p>
-      </section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registrar disponibilidad | CCI Servicio</title>
+  <meta name="description" content="Formulario de disponibilidad mensual para servidores de CCI Santa Ana.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
 
-      <form class="form-card" id="availabilityForm">
-        <fieldset>
-          <legend>Servidor</legend>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Inicio CCI Servicio">
+      <img class="brand-logo" src="assets/logo-cci-santa-ana-header.png" alt="CCI Santa Ana">
+      <span>
+        <strong>CCI Servicio</strong>
+        <small>Registro mensual</small>
+      </span>
+    </a>
+  </header>
 
-          <label for="registrationCode">Codigo de registro</label>
-          <input id="registrationCode" name="codigoRegistro" type="password" autocomplete="off" required>
+  <main class="page-shell">
+    <section class="form-intro" aria-labelledby="titulo-registro">
+      <p class="eyebrow">Disponibilidad mensual</p>
+      <h1 id="titulo-registro">Registra tus fechas</h1>
+      <p>La informacion se limita a nombre, equipo, rol y disponibilidad para preparar la planificacion mensual.</p>
+    </section>
 
-          <label for="serverSelect">Nombre</label>
-          <select id="serverSelect" name="serverId" required>
-            <option value="">Selecciona tu nombre</option>
+    <form class="form-card" id="availabilityForm">
+      <fieldset>
+        <legend>Servidor</legend>
+
+        <label for="registrationCode">Codigo de registro</label>
+        <input id="registrationCode" name="codigoRegistro" type="password" autocomplete="off" required>
+
+        <label for="serverSelect">Nombre</label>
+        <select id="serverSelect" name="serverId" required>
+          <option value="">Selecciona tu nombre</option>
+        </select>
+
+        <div class="new-server-fields" id="newServerFields" hidden>
+          <label for="firstName">Primer nombre</label>
+          <input id="firstName" name="firstName" type="text" autocomplete="given-name">
+
+          <label for="lastName">Primer apellido</label>
+          <input id="lastName" name="lastName" type="text" autocomplete="family-name">
+
+          <label for="teamSelect">Equipo</label>
+          <select id="teamSelect" name="team">
+            <option value="">Selecciona equipo</option>
           </select>
 
-          <div class="new-server-fields" id="newServerFields" hidden>
-            <label for="firstName">Primer nombre</label>
-            <input id="firstName" name="firstName" type="text" autocomplete="given-name">
-
-            <label for="lastName">Primer apellido</label>
-            <input id="lastName" name="lastName" type="text" autocomplete="family-name">
-
-            <label for="teamSelect">Equipo</label>
-            <select id="teamSelect" name="team">
-              <option value="">Selecciona equipo</option>
-            </select>
-
-            <label for="roleSelect">Rol</label>
-            <select id="roleSelect" name="role">
-              <option value="">Selecciona rol</option>
-            </select>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Disponibilidad</legend>
-
-          <label for="serviceMonth">Mes de servicio</label>
-          <select id="serviceMonth" name="month" required></select>
-
-          <label for="maxServices">Cuantas veces puedes servir</label>
-          <input id="maxServices" name="maxServices" type="number" min="1" max="5" value="2" required>
-
-          <label for="observations">Observaciones</label>
-          <textarea id="observations" name="observaciones" rows="4" placeholder="Opcional"></textarea>
-
-          <div class="field-group">
-            <p class="field-label">Domingos en los que no puedes servir</p>
-            <div class="sundays-grid" id="sundaysGrid" aria-live="polite"></div>
-          </div>
-        </fieldset>
-
-        <div class="form-actions">
-          <button class="button primary" type="submit">Guardar registro</button>
-          <a class="button secondary" href="index.html">Volver</a>
+          <label for="roleSelect">Rol</label>
+          <select id="roleSelect" name="role">
+            <option value="">Selecciona rol</option>
+          </select>
         </div>
+      </fieldset>
 
-        <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
-      </form>
-    </main>
+      <fieldset>
+        <legend>Disponibilidad</legend>
 
-    <script src="js/config.js"></script>
-    <script src="js/registro.js"></script>
-  </body>
+        <label for="serviceMonth">Mes de servicio</label>
+        <select id="serviceMonth" name="month" required></select>
+
+        <label for="maxServices">Cuantas veces puedes servir</label>
+        <input id="maxServices" name="maxServices" type="number" min="1" max="5" value="2" required>
+
+        <label for="observations">Observaciones</label>
+        <textarea id="observations" name="observaciones" rows="4" placeholder="Opcional"></textarea>
+
+        <div class="field-group">
+          <p class="field-label">Domingos en los que no puedes servir</p>
+          <div class="sundays-grid" id="sundaysGrid" aria-live="polite"></div>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button class="button primary" type="submit">Guardar registro</button>
+        <a class="button secondary" href="index.html">Volver</a>
+      </div>
+
+      <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/registro.js"></script>
+</body>
+
 </html>
