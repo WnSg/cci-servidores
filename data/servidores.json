@@ -233,13 +233,9 @@
       "equipos": [
         "Multimedia"
       ],
-      "rolPrincipal": "Cámara móvil",
+      "rolPrincipal": "ProPresenter",
       "roles": [
-        "Cámara móvil",
-        "Sonido",
-        "ProPresenter",
-        "Dirección de cámaras",
-        "Recursos para Redes Sociales"
+        "ProPresenter"
       ],
       "activo": true
     },
