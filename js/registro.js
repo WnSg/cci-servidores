@@ -8,6 +8,7 @@
   const lastNameInput = document.querySelector("#lastName");
   const teamSelect = document.querySelector("#teamSelect");
   const roleSelect = document.querySelector("#roleSelect");
+  const additionalRolesSelect = document.querySelector("#additionalRolesSelect");
   const monthInput = document.querySelector("#serviceMonth");
   const maxServicesInput = document.querySelector("#maxServices");
   const observationsInput = document.querySelector("#observations");
@@ -17,7 +18,7 @@
 
   const state = {
     servidores: [],
-    roles: []
+    roles: {}
   };
 
   document.addEventListener("DOMContentLoaded", init);
@@ -42,7 +43,7 @@
       ]);
 
       state.servidores = servidores.servidores || [];
-      state.roles = roles.roles || [];
+      state.roles = roles && typeof roles === "object" ? roles : {};
       populateServers();
       populateTeamsAndRoles();
     } catch (error) {
@@ -67,10 +68,14 @@
     placeholder.textContent = "Selecciona tu nombre";
     serverSelect.appendChild(placeholder);
 
-    state.servidores.forEach(function (server) {
+    state.servidores.filter(function (server) {
+      return server.activo !== false;
+    }).forEach(function (server) {
       const option = document.createElement("option");
       option.value = server.id;
-      option.textContent = server.primerNombre + " " + server.primerApellido + " - " + server.equipo + " / " + server.rol;
+      const fullName = [server.primerNombre, server.primerApellido].filter(Boolean).join(" ");
+      const teams = Array.isArray(server.equipos) ? server.equipos.join(", ") : "";
+      option.textContent = fullName + " - " + teams + " / " + server.rolPrincipal;
       serverSelect.appendChild(option);
     });
 
@@ -81,9 +86,7 @@
   }
 
   function populateTeamsAndRoles() {
-    const teams = Array.from(new Set(state.roles.map(function (item) {
-      return item.equipo;
-    })));
+    const teams = Object.keys(state.roles);
 
     teams.forEach(function (team) {
       const option = document.createElement("option");
@@ -92,32 +95,55 @@
       teamSelect.appendChild(option);
     });
 
-    state.roles.forEach(function (item) {
+    teamSelect.addEventListener("change", populateRoleOptions);
+    roleSelect.addEventListener("change", populateAdditionalRoleOptions);
+  }
+
+  function populateRoleOptions() {
+    roleSelect.innerHTML = "";
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Selecciona rol principal";
+    roleSelect.appendChild(placeholder);
+
+    getRolesForSelectedTeam().forEach(function (role) {
       const option = document.createElement("option");
-      option.value = item.rol;
-      option.textContent = item.equipo + " - " + item.rol;
-      option.dataset.team = item.equipo;
+      option.value = role;
+      option.textContent = role;
       roleSelect.appendChild(option);
     });
 
-    teamSelect.addEventListener("change", filterRolesByTeam);
+    populateAdditionalRoleOptions();
   }
 
-  function filterRolesByTeam() {
-    Array.from(roleSelect.options).forEach(function (option) {
-      if (!option.value) {
+  function populateAdditionalRoleOptions() {
+    const selectedRoles = new Set(Array.from(additionalRolesSelect.selectedOptions).map(function (option) {
+      return option.value;
+    }));
+    additionalRolesSelect.innerHTML = "";
+
+    getRolesForSelectedTeam().forEach(function (role) {
+      if (role === roleSelect.value) {
         return;
       }
-      option.hidden = Boolean(teamSelect.value) && option.dataset.team !== teamSelect.value;
+
+      const option = document.createElement("option");
+      option.value = role;
+      option.textContent = role;
+      option.selected = selectedRoles.has(role);
+      additionalRolesSelect.appendChild(option);
     });
-    roleSelect.value = "";
+  }
+
+  function getRolesForSelectedTeam() {
+    return Array.isArray(state.roles[teamSelect.value]) ? state.roles[teamSelect.value] : [];
   }
 
   function handleServerSelectChange() {
     const addingNewServer = serverSelect.value === "__nuevo__";
     newServerFields.hidden = !addingNewServer;
     firstNameInput.required = addingNewServer;
-    lastNameInput.required = addingNewServer;
+    lastNameInput.required = false;
     teamSelect.required = addingNewServer;
     roleSelect.required = addingNewServer;
   }
@@ -237,9 +263,15 @@
     }
 
     if (isNewServer) {
-      if (!firstNameInput.value.trim() || !lastNameInput.value.trim() || !teamSelect.value || !roleSelect.value) {
+      if (!firstNameInput.value.trim() || !teamSelect.value || !roleSelect.value) {
         return null;
       }
+
+      const roles = Array.from(new Set([roleSelect.value].concat(
+        Array.from(additionalRolesSelect.selectedOptions).map(function (option) {
+          return option.value;
+        })
+      )));
 
       return {
         codigoRegistro: registrationCodeInput.value.trim(),
@@ -248,8 +280,9 @@
         nuevoServidor: {
           primerNombre: firstNameInput.value.trim(),
           primerApellido: lastNameInput.value.trim(),
-          equipo: teamSelect.value,
-          rol: roleSelect.value
+          equipos: [teamSelect.value],
+          rolPrincipal: roleSelect.value,
+          roles: roles
         },
         vecesPuedeServir: Number(maxServicesInput.value),
         fechasNoPuede: unavailableDates,
@@ -303,8 +336,10 @@
       id: result.servidorId,
       primerNombre: payload.nuevoServidor.primerNombre,
       primerApellido: payload.nuevoServidor.primerApellido,
-      equipo: payload.nuevoServidor.equipo,
-      rol: payload.nuevoServidor.rol
+      equipos: payload.nuevoServidor.equipos,
+      rolPrincipal: payload.nuevoServidor.rolPrincipal,
+      roles: payload.nuevoServidor.roles,
+      activo: true
     };
   }
 

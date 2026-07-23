@@ -1,0 +1,20 @@
+{
+  "Altar": {
+    "Dirección de alabanza": 1,
+    "Dirección musical": 1,
+    "Coro/Voces": 7,
+    "Piano": 2,
+    "Guitarra acústica": 1,
+    "Guitarra eléctrica": 1,
+    "Bajo": 1,
+    "Batería": 1
+  },
+  "Multimedia": {
+    "Sonido": 1,
+    "ProPresenter": 1,
+    "OBS": 1,
+    "Cámara móvil": 1,
+    "Dirección de cámaras": 1,
+    "Recursos para Redes Sociales": 1
+  }
+}

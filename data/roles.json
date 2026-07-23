@@ -1,24 +1,20 @@
 {
-  "roles": [
-    {
-      "equipo": "Altar",
-      "rol": "Servidor"
-    },
-    {
-      "equipo": "Altar",
-      "rol": "Coordinador"
-    },
-    {
-      "equipo": "Multimedia",
-      "rol": "Camara"
-    },
-    {
-      "equipo": "Multimedia",
-      "rol": "Proyeccion"
-    },
-    {
-      "equipo": "Multimedia",
-      "rol": "Sonido"
-    }
+  "Altar": [
+    "Dirección de alabanza",
+    "Dirección musical",
+    "Coro/Voces",
+    "Piano",
+    "Guitarra acústica",
+    "Guitarra eléctrica",
+    "Bajo",
+    "Batería"
+  ],
+  "Multimedia": [
+    "Sonido",
+    "ProPresenter",
+    "OBS",
+    "Cámara móvil",
+    "Dirección de cámaras",
+    "Recursos para Redes Sociales"
   ]
 }

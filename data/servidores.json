@@ -1,39 +1,184 @@
 {
   "servidores": [
     {
-      "id": "ana-lopez-altar",
-      "primerNombre": "Ana",
-      "primerApellido": "Lopez",
-      "equipo": "Altar",
-      "rol": "Servidor"
+      "id": "adriana",
+      "primerNombre": "Adriana",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
     },
     {
-      "id": "carlos-mendez-multimedia",
-      "primerNombre": "Carlos",
-      "primerApellido": "Mendez",
-      "equipo": "Multimedia",
-      "rol": "Camara"
+      "id": "angel",
+      "primerNombre": "Angel",
+      "primerApellido": "",
+      "equipos": ["Multimedia"],
+      "rolPrincipal": "ProPresenter",
+      "roles": ["ProPresenter"],
+      "activo": true
     },
     {
-      "id": "roberto-zuniga-multimedia-sonido",
-      "primerNombre": "Roberto",
+      "id": "antonio",
+      "primerNombre": "Antonio",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Guitarra eléctrica",
+      "roles": ["Guitarra eléctrica"],
+      "activo": true
+    },
+    {
+      "id": "betzabe",
+      "primerNombre": "Betzabe",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "douglas-zuniga",
+      "primerNombre": "Douglas",
       "primerApellido": "Zuniga",
-      "equipo": "Multimedia",
-      "rol": "Sonido"
+      "equipos": ["Altar"],
+      "rolPrincipal": "Piano",
+      "roles": ["Piano"],
+      "activo": true
     },
     {
-      "id": "wolfran-silva-multimedia-sonido",
-      "primerNombre": "Wolfran",
-      "primerApellido": "Silva",
-      "equipo": "Multimedia",
-      "rol": "Sonido"
+      "id": "edny",
+      "primerNombre": "Edny",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
     },
     {
-      "id": "wolfran-silva-multimedia-camara",
+      "id": "elias",
+      "primerNombre": "Elias",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "fanny",
+      "primerNombre": "Fanny",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Piano",
+      "roles": ["Piano"],
+      "activo": true
+    },
+    {
+      "id": "ivan",
+      "primerNombre": "Ivan",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Bajo",
+      "roles": ["Bajo", "Dirección musical"],
+      "activo": true
+    },
+    {
+      "id": "jose-vallejo",
+      "primerNombre": "Jose",
+      "primerApellido": "Vallejo",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Dirección de alabanza",
+      "roles": ["Dirección de alabanza", "Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "kaleb",
+      "primerNombre": "Kaleb",
+      "primerApellido": "",
+      "equipos": ["Multimedia"],
+      "rolPrincipal": "OBS",
+      "roles": ["OBS", "Dirección de cámaras"],
+      "activo": true
+    },
+    {
+      "id": "karly-torres",
+      "primerNombre": "Karly",
+      "primerApellido": "Torres",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Dirección de alabanza",
+      "roles": ["Dirección de alabanza", "Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "roberto",
+      "primerNombre": "Roberto",
+      "primerApellido": "",
+      "equipos": ["Multimedia"],
+      "rolPrincipal": "Sonido",
+      "roles": ["Sonido"],
+      "activo": true
+    },
+    {
+      "id": "rocio-bustillo",
+      "primerNombre": "Rocio",
+      "primerApellido": "Bustillo",
+      "equipos": ["Multimedia"],
+      "rolPrincipal": "Recursos para Redes Sociales",
+      "roles": ["Recursos para Redes Sociales", "Cámara móvil"],
+      "activo": true
+    },
+    {
+      "id": "ronald",
+      "primerNombre": "Ronald",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Batería",
+      "roles": ["Batería"],
+      "activo": true
+    },
+    {
+      "id": "ruth",
+      "primerNombre": "Ruth",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "victor",
+      "primerNombre": "Victor",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Guitarra acústica",
+      "roles": ["Guitarra acústica"],
+      "activo": true
+    },
+    {
+      "id": "wolfran-silva",
       "primerNombre": "Wolfran",
       "primerApellido": "Silva",
-      "equipo": "Multimedia",
-      "rol": "Camara"
+      "equipos": ["Multimedia"],
+      "rolPrincipal": "Cámara móvil",
+      "roles": ["Cámara móvil", "Dirección de cámaras", "Recursos para Redes Sociales", "Sonido"],
+      "activo": true
+    },
+    {
+      "id": "zareth",
+      "primerNombre": "Zareth",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Coro/Voces",
+      "roles": ["Coro/Voces"],
+      "activo": true
+    },
+    {
+      "id": "zulema",
+      "primerNombre": "Zulema",
+      "primerApellido": "",
+      "equipos": ["Altar"],
+      "rolPrincipal": "Dirección de alabanza",
+      "roles": ["Dirección de alabanza", "Coro/Voces"],
+      "activo": true
     }
   ]
 }

@@ -1,0 +1,44 @@
+{
+  "Altar": {
+    "Direccion": [
+      "Dir 1",
+      "Dir 2"
+    ],
+    "Voces": [
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8",
+      "V9"
+    ],
+    "Monitores": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "M9"
+    ],
+    "Instrumentos": [
+      "Piano 1",
+      "Piano 2",
+      "Bajo",
+      "Batería",
+      "Guitarra acústica",
+      "Guitarra eléctrica"
+    ]
+  },
+  "Multimedia": [
+    "Sonido",
+    "ProPresenter",
+    "OBS",
+    "Dirección de cámaras",
+    "Cámara móvil",
+    "Recursos para Redes Sociales"
+  ]
+}

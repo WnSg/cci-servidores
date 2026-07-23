@@ -1,18 +1,4 @@
 {
   "mes": "2026-09",
-  "registros": [
-    {
-      "servidorId": "wolfran-silva-multimedia-camara",
-      "primerNombre": "Wolfran",
-      "primerApellido": "Silva",
-      "equipo": "Multimedia",
-      "rol": "Camara",
-      "vecesPuedeServir": 3,
-      "fechasNoPuede": [
-        "2026-09-20"
-      ],
-      "observaciones": "",
-      "actualizadoEn": "2026-07-10T04:50:32.143Z"
-    }
-  ]
+  "registros": []
 }

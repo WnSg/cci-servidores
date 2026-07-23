@@ -57,6 +57,9 @@ async function handleRegistroMensual(request, env) {
 
   if (serverResult.added) {
     servidoresData.servidores.push(serverResult.servidor);
+  }
+
+  if (serverResult.added || serverResult.updated) {
     sortServidores(servidoresData.servidores);
     await writeGithubJson(
       env,
@@ -164,11 +167,16 @@ function validatePayload(payload, env) {
 
     const primerNombre = cleanText(payload.nuevoServidor.primerNombre);
     const primerApellido = cleanText(payload.nuevoServidor.primerApellido);
-    const equipo = cleanText(payload.nuevoServidor.equipo);
-    const rol = cleanText(payload.nuevoServidor.rol);
+    const equipos = cleanStringList(payload.nuevoServidor.equipos);
+    const rolPrincipal = cleanText(payload.nuevoServidor.rolPrincipal);
+    const roles = cleanStringList(payload.nuevoServidor.roles);
 
-    if (!primerNombre || !primerApellido || !equipo || !rol) {
-      return invalid("El servidor nuevo requiere primer nombre, primer apellido, equipo y rol");
+    if (!primerNombre || equipos.length === 0 || !rolPrincipal || roles.length === 0) {
+      return invalid("El servidor nuevo requiere primer nombre, equipos, rol principal y roles");
+    }
+
+    if (!roles.includes(rolPrincipal)) {
+      roles.unshift(rolPrincipal);
     }
 
     return {
@@ -176,7 +184,7 @@ function validatePayload(payload, env) {
       payload: {
         mes: payload.mes,
         servidorExistenteId: null,
-        nuevoServidor: { primerNombre, primerApellido, equipo, rol },
+        nuevoServidor: { primerNombre, primerApellido, equipos, rolPrincipal, roles },
         vecesPuedeServir,
         fechasNoPuede: uniqueStrings(payload.fechasNoPuede),
         observaciones: cleanText(payload.observaciones)
@@ -231,7 +239,7 @@ function validateContractKeys(payload) {
 }
 
 function validateNewServerKeys(nuevoServidor) {
-  const allowedKeys = ["primerNombre", "primerApellido", "equipo", "rol"];
+  const allowedKeys = ["primerNombre", "primerApellido", "equipos", "rolPrincipal", "roles"];
   const unexpectedKeys = Object.keys(nuevoServidor).filter(function (key) {
     return !allowedKeys.includes(key);
   });
@@ -245,6 +253,18 @@ function validateNewServerKeys(nuevoServidor) {
 
   if (missingKeys.length > 0) {
     return { ok: false, error: "Faltan campos en nuevoServidor: " + missingKeys.join(", ") };
+  }
+
+  if (!Array.isArray(nuevoServidor.equipos) || !Array.isArray(nuevoServidor.roles)) {
+    return { ok: false, error: "equipos y roles deben ser listas" };
+  }
+
+  const hasInvalidArrayValue = nuevoServidor.equipos.concat(nuevoServidor.roles).some(function (value) {
+    return typeof value !== "string" || !cleanText(value);
+  });
+
+  if (hasInvalidArrayValue) {
+    return { ok: false, error: "equipos y roles solo pueden contener textos no vacios" };
   }
 
   return { ok: true };
@@ -269,10 +289,12 @@ function resolveServidor(payload, servidores) {
   });
 
   if (existing) {
+    const updated = mergeServidor(existing, payload.nuevoServidor);
     return {
-      ok: false,
-      status: 409,
-      error: "Este servidor ya existe. Seleccionalo en la lista para registrar o actualizar su disponibilidad."
+      ok: true,
+      servidor: existing,
+      added: false,
+      updated
     };
   }
 
@@ -283,19 +305,35 @@ function resolveServidor(payload, servidores) {
       id,
       primerNombre: payload.nuevoServidor.primerNombre,
       primerApellido: payload.nuevoServidor.primerApellido,
-      equipo: payload.nuevoServidor.equipo,
-      rol: payload.nuevoServidor.rol
+      equipos: payload.nuevoServidor.equipos,
+      rolPrincipal: payload.nuevoServidor.rolPrincipal,
+      roles: payload.nuevoServidor.roles,
+      activo: true
     }
   };
+}
+
+function mergeServidor(existing, incoming) {
+  const before = JSON.stringify(existing);
+  existing.primerNombre = existing.primerNombre || incoming.primerNombre;
+  existing.primerApellido = existing.primerApellido || incoming.primerApellido;
+  existing.equipos = mergeUniqueStrings(existing.equipos, incoming.equipos);
+  existing.rolPrincipal = existing.rolPrincipal || incoming.rolPrincipal;
+  existing.roles = mergeUniqueStrings(existing.roles, incoming.roles);
+
+  if (!existing.roles.includes(existing.rolPrincipal)) {
+    existing.roles.unshift(existing.rolPrincipal);
+  }
+
+  existing.activo = existing.activo !== false;
+  delete existing.equipo;
+  delete existing.rol;
+  return before !== JSON.stringify(existing);
 }
 
 function buildDisponibilidadRegistro(payload, servidor) {
   return {
     servidorId: servidor.id,
-    primerNombre: servidor.primerNombre,
-    primerApellido: servidor.primerApellido,
-    equipo: servidor.equipo,
-    rol: servidor.rol,
     vecesPuedeServir: payload.vecesPuedeServir,
     fechasNoPuede: payload.fechasNoPuede,
     observaciones: payload.observaciones,
@@ -404,7 +442,29 @@ function assertEnv(env) {
 
 function normalizeServidoresData(data) {
   return {
-    servidores: Array.isArray(data.servidores) ? data.servidores : []
+    servidores: Array.isArray(data.servidores) ? data.servidores.map(normalizeServidor) : []
+  };
+}
+
+function normalizeServidor(server) {
+  const legacyTeam = cleanText(server.equipo);
+  const legacyRole = cleanText(server.rol);
+  const equipos = cleanStringList(Array.isArray(server.equipos) ? server.equipos : [legacyTeam]);
+  const roles = cleanStringList(Array.isArray(server.roles) ? server.roles : [legacyRole]);
+  const rolPrincipal = cleanText(server.rolPrincipal) || legacyRole || roles[0] || "";
+
+  if (rolPrincipal && !roles.includes(rolPrincipal)) {
+    roles.unshift(rolPrincipal);
+  }
+
+  return {
+    id: cleanText(server.id) || createServerId(server),
+    primerNombre: cleanText(server.primerNombre),
+    primerApellido: cleanText(server.primerApellido),
+    equipos,
+    rolPrincipal,
+    roles,
+    activo: server.activo !== false
   };
 }
 
@@ -429,9 +489,7 @@ function sameServerName(server, input) {
 function createServerId(server) {
   return [
     server.primerNombre,
-    server.primerApellido,
-    server.equipo,
-    server.rol
+    server.primerApellido
   ].map(slugify).filter(Boolean).join("-");
 }
 
@@ -455,6 +513,18 @@ function uniqueStrings(values) {
   return Array.from(new Set(values.map(function (value) {
     return String(value).trim();
   }))).sort();
+}
+
+function cleanStringList(values) {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+
+  return Array.from(new Set(values.map(cleanText).filter(Boolean)));
+}
+
+function mergeUniqueStrings(current, incoming) {
+  return cleanStringList((Array.isArray(current) ? current : []).concat(incoming || []));
 }
 
 function isValidMonth(value) {
