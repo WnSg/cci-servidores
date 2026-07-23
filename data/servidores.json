@@ -235,7 +235,12 @@
       ],
       "rolPrincipal": "ProPresenter",
       "roles": [
-        "ProPresenter"
+        "ProPresenter",
+        "Sonido",
+        "OBS",
+        "Cámara móvil",
+        "Dirección de cámaras",
+        "Recursos para Redes Sociales"
       ],
       "activo": true
     },
