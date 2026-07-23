@@ -48,7 +48,7 @@
   async function loadBaseData() {
     try {
       const [servidores, roles] = await Promise.all([
-        fetchJson(window.CCI_CONFIG.dataPaths.servidores),
+        fetchWorkerJson("/api/servidores"),
         fetchJson(window.CCI_CONFIG.dataPaths.roles)
       ]);
 
@@ -69,6 +69,17 @@
       throw new Error("No se pudo cargar " + path);
     }
     return response.json();
+  }
+
+  async function fetchWorkerJson(path) {
+    const response = await fetch(withCacheBuster(window.CCI_CONFIG.workerUrl + path), {
+      cache: "no-store"
+    });
+    const result = await readResponseJson(response);
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || "No se pudieron cargar los datos del servidor");
+    }
+    return result;
   }
 
   function populateServers(selectedServerId) {
@@ -481,7 +492,7 @@
 
   async function reloadServers(serverToKeep) {
     try {
-      const servidores = await fetchJson(window.CCI_CONFIG.dataPaths.servidores);
+      const servidores = await fetchWorkerJson("/api/servidores");
       state.servidores = servidores.servidores || [];
       if (serverToKeep) {
         upsertLocalServer(serverToKeep);

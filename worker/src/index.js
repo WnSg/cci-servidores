@@ -1,5 +1,6 @@
 const JSON_HEADERS = {
-  "content-type": "application/json; charset=utf-8"
+  "content-type": "application/json; charset=utf-8",
+  "cache-control": "no-store"
 };
 
 export default {
@@ -25,6 +26,10 @@ export default {
         return jsonResponse({ ok: true, service: "cci-servicio-worker" }, 200, env, request);
       }
 
+      if (url.pathname === "/api/servidores" && request.method === "GET") {
+        return handleGetServidores(request, env);
+      }
+
       if (url.pathname === "/api/registro-mensual" && request.method === "POST") {
         return handleRegistroMensual(request, env);
       }
@@ -42,6 +47,13 @@ export default {
     }
   }
 };
+
+async function handleGetServidores(request, env) {
+  const servidoresFile = await readGithubJson(env, "data/servidores.json", { servidores: [] });
+  const servidoresData = normalizeServidoresData(servidoresFile.data);
+  sortServidores(servidoresData.servidores);
+  return jsonResponse({ ok: true, servidores: servidoresData.servidores }, 200, env, request);
+}
 
 async function handleRegistroMensual(request, env) {
   const payload = await readJsonBody(request);
