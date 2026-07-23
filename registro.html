@@ -39,7 +39,11 @@
           <option value="">Selecciona tu nombre</option>
         </select>
 
-        <div class="new-server-fields" id="newServerFields" hidden>
+        <div class="profile-edit-entry" id="profileEditEntry" hidden>
+          <button class="button secondary" id="editProfileButton" type="button">Editar mi información</button>
+        </div>
+
+        <div class="server-profile-fields" id="serverProfileFields" hidden>
           <label for="firstName">Primer nombre</label>
           <input id="firstName" name="firstName" type="text" autocomplete="given-name">
 
@@ -56,9 +60,18 @@
             <option value="">Selecciona rol principal</option>
           </select>
 
-          <label for="additionalRolesSelect">Otros roles en los que puedes servir</label>
-          <select id="additionalRolesSelect" name="additionalRoles" multiple size="6" aria-describedby="additionalRolesHelp"></select>
-          <small id="additionalRolesHelp">Puedes seleccionar varios roles. En computadora, usa Ctrl o Cmd para elegir más de uno.</small>
+          <div class="additional-roles-field">
+            <p class="field-label" id="additionalRolesLabel">Otros roles en los que puedes servir</p>
+            <div class="roles-options" id="additionalRolesGroup" role="group" aria-labelledby="additionalRolesLabel" aria-describedby="additionalRolesHelp"></div>
+            <small id="additionalRolesHelp">Marca todos los roles adicionales en los que puedes servir.</small>
+          </div>
+
+          <div class="profile-edit-actions" id="profileEditActions" hidden>
+            <button class="button primary" id="saveProfileButton" type="button">Guardar cambios de perfil</button>
+            <button class="button secondary" id="cancelProfileButton" type="button">Cancelar</button>
+          </div>
+
+          <p class="status-message profile-status" id="profileStatusMessage" role="status" aria-live="polite"></p>
         </div>
       </fieldset>
 

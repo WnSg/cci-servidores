@@ -29,6 +29,10 @@ export default {
         return handleRegistroMensual(request, env);
       }
 
+      if (url.pathname === "/api/actualizar-servidor" && request.method === "POST") {
+        return handleActualizarServidor(request, env);
+      }
+
       return jsonResponse({ ok: false, error: "Ruta no encontrada" }, 404, env, request);
     } catch (error) {
       return jsonResponse({
@@ -49,6 +53,15 @@ async function handleRegistroMensual(request, env) {
 
   const servidoresFile = await readGithubJson(env, "data/servidores.json", { servidores: [] });
   const servidoresData = normalizeServidoresData(servidoresFile.data);
+
+  if (validation.payload.nuevoServidor) {
+    const rolesFile = await readGithubJson(env, "data/roles.json", {});
+    const rolesValidation = validateProfileRoles(validation.payload.nuevoServidor, rolesFile.data);
+    if (!rolesValidation.ok) {
+      return jsonResponse({ ok: false, error: rolesValidation.error }, rolesValidation.status, env, request);
+    }
+  }
+
   const serverResult = resolveServidor(validation.payload, servidoresData.servidores);
 
   if (!serverResult.ok) {
@@ -59,7 +72,7 @@ async function handleRegistroMensual(request, env) {
     servidoresData.servidores.push(serverResult.servidor);
   }
 
-  if (serverResult.added || serverResult.updated) {
+  if (serverResult.added) {
     sortServidores(servidoresData.servidores);
     await writeGithubJson(
       env,
@@ -94,6 +107,75 @@ async function handleRegistroMensual(request, env) {
     servidorAgregado: serverResult.added,
     mes: validation.payload.mes
   }, 200, env, request);
+}
+
+async function handleActualizarServidor(request, env) {
+  const payload = await readJsonBody(request);
+  const validation = validateProfileUpdatePayload(payload, env);
+
+  if (!validation.ok) {
+    return jsonResponse({ ok: false, error: validation.error }, validation.status, env, request);
+  }
+
+  const servidoresFile = await readGithubJson(env, "data/servidores.json", { servidores: [] });
+  const servidoresData = normalizeServidoresData(servidoresFile.data);
+  const servidor = servidoresData.servidores.find(function (item) {
+    return item.id === validation.payload.servidorId;
+  });
+
+  if (!servidor) {
+    return jsonResponse({ ok: false, error: "El servidor seleccionado no existe" }, 404, env, request);
+  }
+
+  const rolesFile = await readGithubJson(env, "data/roles.json", {});
+  const rolesValidation = validateProfileRoles(validation.payload.cambios, rolesFile.data);
+  if (!rolesValidation.ok) {
+    return jsonResponse({ ok: false, error: rolesValidation.error }, rolesValidation.status, env, request);
+  }
+
+  const otherServers = servidoresData.servidores.filter(function (item) {
+    return item.id !== servidor.id;
+  });
+  const candidate = {
+    ...servidor,
+    primerApellido: validation.payload.cambios.primerApellido,
+    equipos: validation.payload.cambios.equipos,
+    rolPrincipal: validation.payload.cambios.rolPrincipal,
+    roles: validation.payload.cambios.roles
+  };
+
+  if (!candidate.primerApellido && otherServers.some(function (item) {
+    return sameFirstName(item, candidate);
+  })) {
+    return jsonResponse({
+      ok: false,
+      error: "Ya existe otro servidor con este primer nombre. Agrega tu primer apellido para diferenciarte."
+    }, 409, env, request);
+  }
+
+  if (candidate.primerApellido && otherServers.some(function (item) {
+    return sameCompleteName(item, candidate);
+  })) {
+    return jsonResponse({
+      ok: false,
+      error: "Ya existe otro servidor con el mismo nombre y apellido."
+    }, 409, env, request);
+  }
+
+  const changed = JSON.stringify(servidor) !== JSON.stringify(candidate);
+  if (changed) {
+    Object.assign(servidor, candidate);
+    sortServidores(servidoresData.servidores);
+    await writeGithubJson(
+      env,
+      "data/servidores.json",
+      servidoresData,
+      servidoresFile.sha,
+      "Actualiza perfil de servidor CCI"
+    );
+  }
+
+  return jsonResponse({ ok: true, servidor }, 200, env, request);
 }
 
 async function readJsonBody(request) {
@@ -270,6 +352,122 @@ function validateNewServerKeys(nuevoServidor) {
   return { ok: true };
 }
 
+function validateProfileUpdatePayload(payload, env) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return invalid("El cuerpo debe ser JSON valido");
+  }
+
+  const contractValidation = validateExactKeys(payload, ["codigoRegistro", "servidorId", "cambios"], "El payload");
+  if (!contractValidation.ok) {
+    return invalid(contractValidation.error);
+  }
+
+  if (!env.REGISTRATION_CODE || payload.codigoRegistro !== env.REGISTRATION_CODE) {
+    return invalid("Codigo de registro invalido", 401);
+  }
+
+  const servidorId = cleanText(payload.servidorId);
+  if (!servidorId) {
+    return invalid("servidorId es requerido");
+  }
+
+  if (!payload.cambios || typeof payload.cambios !== "object" || Array.isArray(payload.cambios)) {
+    return invalid("cambios debe ser un objeto");
+  }
+
+  const changesValidation = validateExactKeys(
+    payload.cambios,
+    ["primerApellido", "equipos", "rolPrincipal", "roles"],
+    "cambios"
+  );
+  if (!changesValidation.ok) {
+    return invalid(changesValidation.error);
+  }
+
+  if (typeof payload.cambios.primerApellido !== "string") {
+    return invalid("primerApellido debe ser texto");
+  }
+
+  if (!Array.isArray(payload.cambios.equipos) || !Array.isArray(payload.cambios.roles)) {
+    return invalid("equipos y roles deben ser listas");
+  }
+
+  const equipos = cleanStringList(payload.cambios.equipos);
+  const rolPrincipal = cleanText(payload.cambios.rolPrincipal);
+  const roles = cleanStringList(payload.cambios.roles);
+
+  if (equipos.length === 0 || !rolPrincipal || roles.length === 0) {
+    return invalid("La actualización requiere equipos, rol principal y roles");
+  }
+
+  if (!roles.includes(rolPrincipal)) {
+    roles.unshift(rolPrincipal);
+  }
+
+  return {
+    ok: true,
+    payload: {
+      servidorId,
+      cambios: {
+        primerApellido: cleanText(payload.cambios.primerApellido),
+        equipos,
+        rolPrincipal,
+        roles
+      }
+    }
+  };
+}
+
+function validateExactKeys(value, allowedKeys, label) {
+  const keys = Object.keys(value);
+  const unexpectedKeys = keys.filter(function (key) {
+    return !allowedKeys.includes(key);
+  });
+  const missingKeys = allowedKeys.filter(function (key) {
+    return !Object.prototype.hasOwnProperty.call(value, key);
+  });
+
+  if (unexpectedKeys.length > 0) {
+    return { ok: false, error: label + " contiene campos no permitidos: " + unexpectedKeys.join(", ") };
+  }
+
+  if (missingKeys.length > 0) {
+    return { ok: false, error: "Faltan campos en " + label + ": " + missingKeys.join(", ") };
+  }
+
+  return { ok: true };
+}
+
+function validateProfileRoles(profile, rolesCatalog) {
+  const equipos = cleanStringList(profile.equipos);
+  const roles = cleanStringList(profile.roles);
+  const rolPrincipal = cleanText(profile.rolPrincipal);
+  const unknownTeams = equipos.filter(function (team) {
+    return !Array.isArray(rolesCatalog[team]);
+  });
+
+  if (unknownTeams.length > 0) {
+    return invalid("Equipo no permitido: " + unknownTeams.join(", "));
+  }
+
+  const allowedRoles = new Set(equipos.flatMap(function (team) {
+    return rolesCatalog[team];
+  }));
+  const unknownRoles = roles.filter(function (role) {
+    return !allowedRoles.has(role);
+  });
+
+  if (unknownRoles.length > 0 || !allowedRoles.has(rolPrincipal)) {
+    return invalid("Uno o mas roles no pertenecen a los equipos seleccionados");
+  }
+
+  if (!roles.includes(rolPrincipal)) {
+    return invalid("El rol principal debe estar incluido en roles");
+  }
+
+  return { ok: true };
+}
+
 function resolveServidor(payload, servidores) {
   if (payload.servidorExistenteId) {
     const existing = servidores.find(function (server) {
@@ -283,20 +481,31 @@ function resolveServidor(payload, servidores) {
     return { ok: true, servidor: existing, added: false };
   }
 
-  const id = createServerId(payload.nuevoServidor);
-  const existing = servidores.find(function (server) {
-    return server.id === id || sameServerName(server, payload.nuevoServidor);
+  const serversWithSameFirstName = servidores.filter(function (server) {
+    return sameFirstName(server, payload.nuevoServidor);
   });
 
-  if (existing) {
-    const updated = mergeServidor(existing, payload.nuevoServidor);
+  if (!payload.nuevoServidor.primerApellido && serversWithSameFirstName.length > 0) {
     return {
-      ok: true,
-      servidor: existing,
-      added: false,
-      updated
+      ok: false,
+      status: 409,
+      error: "Ya existe otro servidor con este primer nombre. Agrega tu primer apellido para diferenciarte."
     };
   }
+
+  const existingWithCompleteName = servidores.find(function (server) {
+    return sameCompleteName(server, payload.nuevoServidor);
+  });
+
+  if (payload.nuevoServidor.primerApellido && existingWithCompleteName) {
+    return {
+      ok: false,
+      status: 409,
+      error: "Ya existe un servidor con el mismo nombre y apellido. Seleccionalo en la lista."
+    };
+  }
+
+  const id = createUniqueServerId(payload.nuevoServidor, servidores);
 
   return {
     ok: true,
@@ -311,24 +520,6 @@ function resolveServidor(payload, servidores) {
       activo: true
     }
   };
-}
-
-function mergeServidor(existing, incoming) {
-  const before = JSON.stringify(existing);
-  existing.primerNombre = existing.primerNombre || incoming.primerNombre;
-  existing.primerApellido = existing.primerApellido || incoming.primerApellido;
-  existing.equipos = mergeUniqueStrings(existing.equipos, incoming.equipos);
-  existing.rolPrincipal = existing.rolPrincipal || incoming.rolPrincipal;
-  existing.roles = mergeUniqueStrings(existing.roles, incoming.roles);
-
-  if (!existing.roles.includes(existing.rolPrincipal)) {
-    existing.roles.unshift(existing.rolPrincipal);
-  }
-
-  existing.activo = existing.activo !== false;
-  delete existing.equipo;
-  delete existing.rol;
-  return before !== JSON.stringify(existing);
 }
 
 function buildDisponibilidadRegistro(payload, servidor) {
@@ -353,7 +544,7 @@ function upsertRegistro(registros, registro) {
   }
 
   registros.sort(function (a, b) {
-    return a.primerNombre.localeCompare(b.primerNombre, "es") || a.primerApellido.localeCompare(b.primerApellido, "es");
+    return String(a.servidorId || "").localeCompare(String(b.servidorId || ""), "es");
   });
 }
 
@@ -458,7 +649,7 @@ function normalizeServidor(server) {
   }
 
   return {
-    id: cleanText(server.id) || createServerId(server),
+    id: cleanText(server.id) || createLegacyServerId(server),
     primerNombre: cleanText(server.primerNombre),
     primerApellido: cleanText(server.primerApellido),
     equipos,
@@ -481,12 +672,33 @@ function sortServidores(servidores) {
   });
 }
 
-function sameServerName(server, input) {
-  return normalize(server.primerNombre) === normalize(input.primerNombre) &&
-    normalize(server.primerApellido) === normalize(input.primerApellido);
+function sameFirstName(server, input) {
+  return normalizeIdentity(server.primerNombre) === normalizeIdentity(input.primerNombre);
 }
 
-function createServerId(server) {
+function sameCompleteName(server, input) {
+  const serverLastName = normalizeIdentity(server.primerApellido);
+  const inputLastName = normalizeIdentity(input.primerApellido);
+  return Boolean(serverLastName && inputLastName) &&
+    sameFirstName(server, input) &&
+    serverLastName === inputLastName;
+}
+
+function createUniqueServerId(server, servidores) {
+  const base = slugify(server.primerNombre) || "servidor";
+  let id = "";
+
+  do {
+    const suffix = crypto.randomUUID().replace(/-/g, "").slice(0, 8);
+    id = base + "-" + suffix;
+  } while (servidores.some(function (item) {
+    return item.id === id;
+  }));
+
+  return id;
+}
+
+function createLegacyServerId(server) {
   return [
     server.primerNombre,
     server.primerApellido
@@ -505,6 +717,12 @@ function normalize(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function normalizeIdentity(value) {
+  return normalize(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function cleanText(value) {
   return String(value || "").trim().replace(/\s+/g, " ");
 }
@@ -521,10 +739,6 @@ function cleanStringList(values) {
   }
 
   return Array.from(new Set(values.map(cleanText).filter(Boolean)));
-}
-
-function mergeUniqueStrings(current, incoming) {
-  return cleanStringList((Array.isArray(current) ? current : []).concat(incoming || []));
 }
 
 function isValidMonth(value) {

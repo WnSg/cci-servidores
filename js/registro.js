@@ -3,18 +3,25 @@
   const submitButton = form.querySelector("button[type='submit']");
   const registrationCodeInput = document.querySelector("#registrationCode");
   const serverSelect = document.querySelector("#serverSelect");
-  const newServerFields = document.querySelector("#newServerFields");
+  const profileEditEntry = document.querySelector("#profileEditEntry");
+  const editProfileButton = document.querySelector("#editProfileButton");
+  const serverProfileFields = document.querySelector("#serverProfileFields");
+  const profileEditActions = document.querySelector("#profileEditActions");
+  const saveProfileButton = document.querySelector("#saveProfileButton");
+  const cancelProfileButton = document.querySelector("#cancelProfileButton");
+  const profileStatusMessage = document.querySelector("#profileStatusMessage");
   const firstNameInput = document.querySelector("#firstName");
   const lastNameInput = document.querySelector("#lastName");
   const teamSelect = document.querySelector("#teamSelect");
   const roleSelect = document.querySelector("#roleSelect");
-  const additionalRolesSelect = document.querySelector("#additionalRolesSelect");
+  const additionalRolesGroup = document.querySelector("#additionalRolesGroup");
   const monthInput = document.querySelector("#serviceMonth");
   const maxServicesInput = document.querySelector("#maxServices");
   const observationsInput = document.querySelector("#observations");
   const sundaysGrid = document.querySelector("#sundaysGrid");
   const statusMessage = document.querySelector("#statusMessage");
   const defaultSubmitText = submitButton.textContent;
+  const defaultSaveProfileText = saveProfileButton.textContent;
 
   const state = {
     servidores: [],
@@ -29,6 +36,9 @@
     renderSundays(monthInput.value);
 
     serverSelect.addEventListener("change", handleServerSelectChange);
+    editProfileButton.addEventListener("click", startProfileEdit);
+    saveProfileButton.addEventListener("click", handleProfileSave);
+    cancelProfileButton.addEventListener("click", cancelProfileEdit);
     monthInput.addEventListener("change", function () {
       renderSundays(monthInput.value);
     });
@@ -61,7 +71,7 @@
     return response.json();
   }
 
-  function populateServers() {
+  function populateServers(selectedServerId) {
     serverSelect.innerHTML = "";
     const placeholder = document.createElement("option");
     placeholder.value = "";
@@ -83,6 +93,12 @@
     newServerOption.value = "__nuevo__";
     newServerOption.textContent = "+ Agregar servidor";
     serverSelect.appendChild(newServerOption);
+
+    if (selectedServerId && Array.from(serverSelect.options).some(function (option) {
+      return option.value === selectedServerId;
+    })) {
+      serverSelect.value = selectedServerId;
+    }
   }
 
   function populateTeamsAndRoles() {
@@ -116,23 +132,42 @@
     populateAdditionalRoleOptions();
   }
 
-  function populateAdditionalRoleOptions() {
-    const selectedRoles = new Set(Array.from(additionalRolesSelect.selectedOptions).map(function (option) {
-      return option.value;
+  function populateAdditionalRoleOptions(rolesToSelect) {
+    const selectedRoles = rolesToSelect || new Set(Array.from(additionalRolesGroup.querySelectorAll("input:checked")).map(function (input) {
+      return input.value;
     }));
-    additionalRolesSelect.innerHTML = "";
+    additionalRolesGroup.innerHTML = "";
 
     getRolesForSelectedTeam().forEach(function (role) {
       if (role === roleSelect.value) {
         return;
       }
 
-      const option = document.createElement("option");
-      option.value = role;
-      option.textContent = role;
-      option.selected = selectedRoles.has(role);
-      additionalRolesSelect.appendChild(option);
+      const input = document.createElement("input");
+      const label = document.createElement("label");
+      const text = document.createElement("span");
+      const id = "additional-role-" + slugifyForId(role);
+
+      input.type = "checkbox";
+      input.id = id;
+      input.name = "additionalRoles";
+      input.value = role;
+      input.checked = selectedRoles.has(role);
+
+      label.className = "role-option";
+      label.setAttribute("for", id);
+      text.textContent = role;
+      label.append(input, text);
+      additionalRolesGroup.appendChild(label);
     });
+  }
+
+  function slugifyForId(value) {
+    return value.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
   }
 
   function getRolesForSelectedTeam() {
@@ -141,11 +176,68 @@
 
   function handleServerSelectChange() {
     const addingNewServer = serverSelect.value === "__nuevo__";
-    newServerFields.hidden = !addingNewServer;
+    const selectedExistingServer = getSelectedExistingServer();
+
+    profileEditEntry.hidden = !selectedExistingServer;
+    serverProfileFields.hidden = !addingNewServer;
+    profileEditActions.hidden = true;
+    clearProfileStatus();
+    resetProfileFields();
+    firstNameInput.readOnly = false;
     firstNameInput.required = addingNewServer;
     lastNameInput.required = false;
     teamSelect.required = addingNewServer;
     roleSelect.required = addingNewServer;
+  }
+
+  function getSelectedExistingServer() {
+    if (!serverSelect.value || serverSelect.value === "__nuevo__") {
+      return null;
+    }
+
+    return state.servidores.find(function (server) {
+      return server.id === serverSelect.value;
+    }) || null;
+  }
+
+  function startProfileEdit() {
+    const server = getSelectedExistingServer();
+    if (!server) {
+      return;
+    }
+
+    firstNameInput.value = server.primerNombre || "";
+    firstNameInput.readOnly = true;
+    lastNameInput.value = server.primerApellido || "";
+    teamSelect.value = Array.isArray(server.equipos) ? server.equipos[0] || "" : "";
+    populateRoleOptions();
+    roleSelect.value = server.rolPrincipal || "";
+    populateAdditionalRoleOptions(new Set(Array.isArray(server.roles) ? server.roles : []));
+
+    profileEditEntry.hidden = true;
+    serverProfileFields.hidden = false;
+    profileEditActions.hidden = false;
+    teamSelect.required = true;
+    roleSelect.required = true;
+    clearProfileStatus();
+  }
+
+  function cancelProfileEdit() {
+    profileEditEntry.hidden = !getSelectedExistingServer();
+    serverProfileFields.hidden = true;
+    profileEditActions.hidden = true;
+    teamSelect.required = false;
+    roleSelect.required = false;
+    clearProfileStatus();
+    resetProfileFields();
+  }
+
+  function resetProfileFields() {
+    firstNameInput.value = "";
+    lastNameInput.value = "";
+    teamSelect.value = "";
+    roleSelect.innerHTML = '<option value="">Selecciona rol principal</option>';
+    additionalRolesGroup.innerHTML = "";
   }
 
   function renderSundays(monthValue) {
@@ -211,8 +303,75 @@
     }).format(date);
   }
 
+  async function handleProfileSave() {
+    const payload = buildProfileUpdatePayload();
+
+    if (!payload) {
+      showMessage(profileStatusMessage, "Completa el código, equipo y rol principal antes de guardar.", "error");
+      return;
+    }
+
+    const selectedServer = getSelectedExistingServer();
+    if (!payload.cambios.primerApellido && hasAnotherServerWithFirstName(selectedServer.primerNombre, selectedServer.id)) {
+      showMessage(profileStatusMessage, "Ya existe otro servidor con este primer nombre. Debes agregar tu primer apellido para diferenciarte.", "warning");
+      return;
+    }
+
+    setProfileSavingState(true);
+
+    try {
+      const response = await fetch(window.CCI_CONFIG.workerUrl + "/api/actualizar-servidor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = await readResponseJson(response);
+
+      if (!response.ok || !result.ok) {
+        showMessage(profileStatusMessage, result.error || "No se pudo actualizar tu información.", response.status === 409 ? "warning" : "error");
+        return;
+      }
+
+      if (result.servidor) {
+        upsertLocalServer(result.servidor);
+        populateServers(result.servidor.id);
+      }
+
+      showMessage(profileStatusMessage, "Tu información fue actualizada correctamente.", "success");
+    } catch (error) {
+      showMessage(profileStatusMessage, "No se pudo conectar con el servidor. Intenta nuevamente en unos minutos.", "error");
+    } finally {
+      setProfileSavingState(false);
+    }
+  }
+
+  function buildProfileUpdatePayload() {
+    const server = getSelectedExistingServer();
+    if (!server || !registrationCodeInput.value.trim() || !teamSelect.value || !roleSelect.value) {
+      return null;
+    }
+
+    return {
+      codigoRegistro: registrationCodeInput.value.trim(),
+      servidorId: server.id,
+      cambios: {
+        primerApellido: lastNameInput.value.trim(),
+        equipos: [teamSelect.value],
+        rolPrincipal: roleSelect.value,
+        roles: getSelectedProfileRoles()
+      }
+    };
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
+
+    if (serverSelect.value === "__nuevo__" && !lastNameInput.value.trim() && hasAnotherServerWithFirstName(firstNameInput.value)) {
+      showStatus("Ya existe otro servidor con este primer nombre. Agrega tu primer apellido para poder diferenciarte.", "warning");
+      return;
+    }
 
     const payload = buildPayload();
 
@@ -267,12 +426,6 @@
         return null;
       }
 
-      const roles = Array.from(new Set([roleSelect.value].concat(
-        Array.from(additionalRolesSelect.selectedOptions).map(function (option) {
-          return option.value;
-        })
-      )));
-
       return {
         codigoRegistro: registrationCodeInput.value.trim(),
         mes: monthInput.value,
@@ -282,7 +435,7 @@
           primerApellido: lastNameInput.value.trim(),
           equipos: [teamSelect.value],
           rolPrincipal: roleSelect.value,
-          roles: roles
+          roles: getSelectedProfileRoles()
         },
         vecesPuedeServir: Number(maxServicesInput.value),
         fechasNoPuede: unavailableDates,
@@ -299,6 +452,31 @@
       fechasNoPuede: unavailableDates,
       observaciones: observationsInput.value.trim()
     };
+  }
+
+  function getSelectedProfileRoles() {
+    return Array.from(new Set([roleSelect.value].concat(
+      Array.from(additionalRolesGroup.querySelectorAll("input:checked")).map(function (input) {
+        return input.value;
+      })
+    ))).filter(Boolean);
+  }
+
+  function hasAnotherServerWithFirstName(firstName, excludedServerId) {
+    const normalizedFirstName = normalizeName(firstName);
+    if (!normalizedFirstName) {
+      return false;
+    }
+
+    return state.servidores.some(function (server) {
+      return server.id !== excludedServerId && normalizeName(server.primerNombre) === normalizedFirstName;
+    });
+  }
+
+  function normalizeName(value) {
+    return String(value || "").trim().toLocaleLowerCase("es")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
   }
 
   async function reloadServers(serverToKeep) {
@@ -377,6 +555,12 @@
     submitButton.textContent = isSaving ? "Guardando..." : defaultSubmitText;
   }
 
+  function setProfileSavingState(isSaving) {
+    saveProfileButton.disabled = isSaving;
+    cancelProfileButton.disabled = isSaving;
+    saveProfileButton.textContent = isSaving ? "Guardando cambios..." : defaultSaveProfileText;
+  }
+
   function populateMonthOptions() {
     monthInput.innerHTML = "";
 
@@ -414,9 +598,18 @@
   }
 
   function showStatus(message, type) {
+    showMessage(statusMessage, message, type);
+  }
+
+  function showMessage(element, message, type) {
     const statusType = type || "success";
-    statusMessage.textContent = message;
-    statusMessage.classList.remove("success", "warning", "error");
-    statusMessage.classList.add(statusType);
+    element.textContent = message;
+    element.classList.remove("success", "warning", "error");
+    element.classList.add(statusType);
+  }
+
+  function clearProfileStatus() {
+    profileStatusMessage.textContent = "";
+    profileStatusMessage.classList.remove("success", "warning", "error");
   }
 })();
