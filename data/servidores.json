@@ -235,7 +235,10 @@
       ],
       "rolPrincipal": "Sonido",
       "roles": [
-        "Sonido"
+        "Sonido",
+        "ProPresenter",
+        "OBS",
+        "Cámara móvil"
       ],
       "activo": true
     },
