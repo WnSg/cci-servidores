@@ -2,6 +2,15 @@
   "mes": "2026-09",
   "registros": [
     {
+      "servidorId": "adriana",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-06"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-13T23:52:46.417Z"
+    },
+    {
       "servidorId": "roberto",
       "vecesPuedeServir": 2,
       "fechasNoPuede": [
