@@ -11,6 +11,15 @@
       "actualizadoEn": "2026-08-13T23:52:46.417Z"
     },
     {
+      "servidorId": "angel",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-06"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-13T23:55:24.442Z"
+    },
+    {
       "servidorId": "roberto",
       "vecesPuedeServir": 2,
       "fechasNoPuede": [
