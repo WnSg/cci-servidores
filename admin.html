@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración | CCI Servicio</title>
+  <meta name="description" content="Vista administrativa y planificación mensual de servidores de CCI Santa Ana.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Inicio CCI Servicio">
+      <img class="brand-logo" src="assets/logo-cci-santa-ana-header.png" alt="CCI Santa Ana">
+      <span>
+        <strong>CCI Servicio</strong>
+        <small>Administración</small>
+      </span>
+    </a>
+  </header>
+
+  <main class="page-shell admin-shell">
+    <section class="form-intro" aria-labelledby="adminTitle">
+      <p class="eyebrow">Coordinación mensual</p>
+      <h1 id="adminTitle">Disponibilidad y planificación</h1>
+      <p>Revisa la cobertura del mes, genera una propuesta equilibrada y ajusta las asignaciones antes de guardarla.</p>
+    </section>
+
+    <section class="form-card admin-controls-card" aria-labelledby="accessTitle">
+      <h2 id="accessTitle">Acceso administrativo</h2>
+      <form class="admin-controls" id="adminControlsForm">
+        <div>
+          <label for="adminCode">Código administrativo</label>
+          <input id="adminCode" type="password" autocomplete="off" required>
+        </div>
+        <div>
+          <label for="adminMonth">Mes</label>
+          <select id="adminMonth" required></select>
+        </div>
+        <button class="button primary" id="loadAdminButton" type="submit">Cargar información</button>
+      </form>
+      <p class="status-message" id="adminStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <div id="adminDashboard" hidden>
+      <section class="admin-summary" aria-label="Resumen mensual">
+        <article class="metric-card">
+          <span>Registrados</span>
+          <strong id="registeredMetric">0</strong>
+          <small id="activeMetric">de 0 servidores activos</small>
+        </article>
+        <article class="metric-card">
+          <span>Domingos</span>
+          <strong id="sundaysMetric">0</strong>
+          <small>en el mes seleccionado</small>
+        </article>
+        <article class="metric-card">
+          <span>Puestos</span>
+          <strong id="slotsMetric">0</strong>
+          <small>requeridos por domingo</small>
+        </article>
+        <article class="metric-card">
+          <span>Capacidad</span>
+          <strong id="capacityMetric">0</strong>
+          <small>servicios declarados</small>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="form-card admin-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Seguimiento</p>
+              <h2>Servidores pendientes</h2>
+            </div>
+            <span class="count-badge" id="pendingCount">0</span>
+          </div>
+          <div class="pending-list" id="pendingList"></div>
+        </article>
+
+        <article class="form-card admin-panel coverage-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Cobertura</p>
+              <h2>Elegibles por rol</h2>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="coverage-table">
+              <thead>
+                <tr>
+                  <th>Equipo / rol</th>
+                  <th>Necesarios</th>
+                  <th>Registrados</th>
+                </tr>
+              </thead>
+              <tbody id="coverageBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="form-card planning-actions-card">
+        <div>
+          <p class="eyebrow">Propuesta mensual</p>
+          <h2>Generar planificación</h2>
+          <p>El generador nunca asignará a una persona más de una vez el mismo domingo.</p>
+        </div>
+        <div class="form-actions planning-buttons">
+          <button class="button primary" id="generatePlanButton" type="button">Generar propuesta</button>
+          <button class="button secondary" id="loadSavedPlanButton" type="button" hidden>Cargar plan guardado</button>
+        </div>
+      </section>
+
+      <section class="planning-section" id="planningSection" hidden aria-labelledby="planningTitle">
+        <div class="planning-header">
+          <div>
+            <p class="eyebrow">Borrador editable</p>
+            <h2 id="planningTitle">Planificación del mes</h2>
+          </div>
+          <div class="planning-totals" id="planningTotals"></div>
+        </div>
+        <div class="planning-alerts" id="planningAlerts" role="status" aria-live="polite"></div>
+        <div class="planning-days" id="planningDays"></div>
+        <div class="form-actions planning-save-actions">
+          <button class="button primary" id="savePlanButton" type="button">Guardar planificación</button>
+        </div>
+        <p class="status-message" id="planningStatus" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+
+</html>
