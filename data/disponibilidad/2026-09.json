@@ -1,4 +1,14 @@
 {
   "mes": "2026-09",
-  "registros": []
+  "registros": [
+    {
+      "servidorId": "wolfran-silva",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-27"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-13T23:48:47.137Z"
+    }
+  ]
 }
