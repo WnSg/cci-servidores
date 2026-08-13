@@ -29,6 +29,16 @@
       "actualizadoEn": "2026-08-13T23:55:51.059Z"
     },
     {
+      "servidorId": "betzabe",
+      "vecesPuedeServir": 2,
+      "fechasNoPuede": [
+        "2026-09-20",
+        "2026-09-27"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-13T23:56:15.530Z"
+    },
+    {
       "servidorId": "roberto",
       "vecesPuedeServir": 2,
       "fechasNoPuede": [
