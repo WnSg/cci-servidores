@@ -76,6 +76,15 @@
       "actualizadoEn": "2026-08-13T23:58:37.912Z"
     },
     {
+      "servidorId": "jose-vallejo",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-06"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-13T23:59:15.976Z"
+    },
+    {
       "servidorId": "roberto",
       "vecesPuedeServir": 2,
       "fechasNoPuede": [
