@@ -1,0 +1,616 @@
+{
+  "mes": "2026-09",
+  "estado": "borrador",
+  "fechas": [
+    {
+      "fecha": "2026-09-06",
+      "asignaciones": [
+        {
+          "slotId": "altar-direccion-de-alabanza-1",
+          "equipo": "Altar",
+          "rol": "Dirección de alabanza",
+          "posicion": "Dir 1",
+          "servidorId": "karly-torres"
+        },
+        {
+          "slotId": "altar-direccion-musical-1",
+          "equipo": "Altar",
+          "rol": "Dirección musical",
+          "posicion": "Dir 2",
+          "servidorId": "ivan"
+        },
+        {
+          "slotId": "altar-coro-voces-1",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V3",
+          "servidorId": "betzabe"
+        },
+        {
+          "slotId": "altar-coro-voces-2",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V4",
+          "servidorId": "ruth"
+        },
+        {
+          "slotId": "altar-coro-voces-3",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V5",
+          "servidorId": "zareth"
+        },
+        {
+          "slotId": "altar-coro-voces-4",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V6",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-5",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V7",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-6",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V8",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-7",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V9",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-piano-1",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 1",
+          "servidorId": "douglas-zuniga"
+        },
+        {
+          "slotId": "altar-piano-2",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 2",
+          "servidorId": "fanny"
+        },
+        {
+          "slotId": "altar-guitarra-acustica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra acústica",
+          "posicion": "Guitarra acústica",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-guitarra-electrica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra eléctrica",
+          "posicion": "Guitarra eléctrica",
+          "servidorId": "antonio"
+        },
+        {
+          "slotId": "altar-bajo-1",
+          "equipo": "Altar",
+          "rol": "Bajo",
+          "posicion": "Bajo",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-bateria-1",
+          "equipo": "Altar",
+          "rol": "Batería",
+          "posicion": "Batería",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-sonido-1",
+          "equipo": "Multimedia",
+          "rol": "Sonido",
+          "posicion": "Sonido",
+          "servidorId": "roberto"
+        },
+        {
+          "slotId": "multimedia-propresenter-1",
+          "equipo": "Multimedia",
+          "rol": "ProPresenter",
+          "posicion": "ProPresenter",
+          "servidorId": "wolfran-silva"
+        },
+        {
+          "slotId": "multimedia-obs-1",
+          "equipo": "Multimedia",
+          "rol": "OBS",
+          "posicion": "OBS",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-camara-movil-1",
+          "equipo": "Multimedia",
+          "rol": "Cámara móvil",
+          "posicion": "Cámara móvil",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-direccion-de-camaras-1",
+          "equipo": "Multimedia",
+          "rol": "Dirección de cámaras",
+          "posicion": "Dirección de cámaras",
+          "servidorId": "kaleb"
+        },
+        {
+          "slotId": "multimedia-recursos-para-redes-sociales-1",
+          "equipo": "Multimedia",
+          "rol": "Recursos para Redes Sociales",
+          "posicion": "Recursos para Redes Sociales",
+          "servidorId": "rocio-bustillo"
+        }
+      ]
+    },
+    {
+      "fecha": "2026-09-13",
+      "asignaciones": [
+        {
+          "slotId": "altar-direccion-de-alabanza-1",
+          "equipo": "Altar",
+          "rol": "Dirección de alabanza",
+          "posicion": "Dir 1",
+          "servidorId": "jose-vallejo"
+        },
+        {
+          "slotId": "altar-direccion-musical-1",
+          "equipo": "Altar",
+          "rol": "Dirección musical",
+          "posicion": "Dir 2",
+          "servidorId": "ivan"
+        },
+        {
+          "slotId": "altar-coro-voces-1",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V3",
+          "servidorId": "adriana"
+        },
+        {
+          "slotId": "altar-coro-voces-2",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V4",
+          "servidorId": "edny"
+        },
+        {
+          "slotId": "altar-coro-voces-3",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V5",
+          "servidorId": "elias"
+        },
+        {
+          "slotId": "altar-coro-voces-4",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V6",
+          "servidorId": "betzabe"
+        },
+        {
+          "slotId": "altar-coro-voces-5",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V7",
+          "servidorId": "zareth"
+        },
+        {
+          "slotId": "altar-coro-voces-6",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V8",
+          "servidorId": "karly-torres"
+        },
+        {
+          "slotId": "altar-coro-voces-7",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V9",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-piano-1",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 1",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-piano-2",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 2",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-guitarra-acustica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra acústica",
+          "posicion": "Guitarra acústica",
+          "servidorId": "victor"
+        },
+        {
+          "slotId": "altar-guitarra-electrica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra eléctrica",
+          "posicion": "Guitarra eléctrica",
+          "servidorId": "antonio"
+        },
+        {
+          "slotId": "altar-bajo-1",
+          "equipo": "Altar",
+          "rol": "Bajo",
+          "posicion": "Bajo",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-bateria-1",
+          "equipo": "Altar",
+          "rol": "Batería",
+          "posicion": "Batería",
+          "servidorId": "ronald"
+        },
+        {
+          "slotId": "multimedia-sonido-1",
+          "equipo": "Multimedia",
+          "rol": "Sonido",
+          "posicion": "Sonido",
+          "servidorId": "wolfran-silva"
+        },
+        {
+          "slotId": "multimedia-propresenter-1",
+          "equipo": "Multimedia",
+          "rol": "ProPresenter",
+          "posicion": "ProPresenter",
+          "servidorId": "angel"
+        },
+        {
+          "slotId": "multimedia-obs-1",
+          "equipo": "Multimedia",
+          "rol": "OBS",
+          "posicion": "OBS",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-camara-movil-1",
+          "equipo": "Multimedia",
+          "rol": "Cámara móvil",
+          "posicion": "Cámara móvil",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-direccion-de-camaras-1",
+          "equipo": "Multimedia",
+          "rol": "Dirección de cámaras",
+          "posicion": "Dirección de cámaras",
+          "servidorId": "kaleb"
+        },
+        {
+          "slotId": "multimedia-recursos-para-redes-sociales-1",
+          "equipo": "Multimedia",
+          "rol": "Recursos para Redes Sociales",
+          "posicion": "Recursos para Redes Sociales",
+          "servidorId": null
+        }
+      ]
+    },
+    {
+      "fecha": "2026-09-20",
+      "asignaciones": [
+        {
+          "slotId": "altar-direccion-de-alabanza-1",
+          "equipo": "Altar",
+          "rol": "Dirección de alabanza",
+          "posicion": "Dir 1",
+          "servidorId": "jose-vallejo"
+        },
+        {
+          "slotId": "altar-direccion-musical-1",
+          "equipo": "Altar",
+          "rol": "Dirección musical",
+          "posicion": "Dir 2",
+          "servidorId": "ivan"
+        },
+        {
+          "slotId": "altar-coro-voces-1",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V3",
+          "servidorId": "adriana"
+        },
+        {
+          "slotId": "altar-coro-voces-2",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V4",
+          "servidorId": "edny"
+        },
+        {
+          "slotId": "altar-coro-voces-3",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V5",
+          "servidorId": "elias"
+        },
+        {
+          "slotId": "altar-coro-voces-4",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V6",
+          "servidorId": "ruth"
+        },
+        {
+          "slotId": "altar-coro-voces-5",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V7",
+          "servidorId": "karly-torres"
+        },
+        {
+          "slotId": "altar-coro-voces-6",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V8",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-7",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V9",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-piano-1",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 1",
+          "servidorId": "douglas-zuniga"
+        },
+        {
+          "slotId": "altar-piano-2",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 2",
+          "servidorId": "fanny"
+        },
+        {
+          "slotId": "altar-guitarra-acustica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra acústica",
+          "posicion": "Guitarra acústica",
+          "servidorId": "victor"
+        },
+        {
+          "slotId": "altar-guitarra-electrica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra eléctrica",
+          "posicion": "Guitarra eléctrica",
+          "servidorId": "antonio"
+        },
+        {
+          "slotId": "altar-bajo-1",
+          "equipo": "Altar",
+          "rol": "Bajo",
+          "posicion": "Bajo",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-bateria-1",
+          "equipo": "Altar",
+          "rol": "Batería",
+          "posicion": "Batería",
+          "servidorId": "ronald"
+        },
+        {
+          "slotId": "multimedia-sonido-1",
+          "equipo": "Multimedia",
+          "rol": "Sonido",
+          "posicion": "Sonido",
+          "servidorId": "wolfran-silva"
+        },
+        {
+          "slotId": "multimedia-propresenter-1",
+          "equipo": "Multimedia",
+          "rol": "ProPresenter",
+          "posicion": "ProPresenter",
+          "servidorId": "angel"
+        },
+        {
+          "slotId": "multimedia-obs-1",
+          "equipo": "Multimedia",
+          "rol": "OBS",
+          "posicion": "OBS",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-camara-movil-1",
+          "equipo": "Multimedia",
+          "rol": "Cámara móvil",
+          "posicion": "Cámara móvil",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-direccion-de-camaras-1",
+          "equipo": "Multimedia",
+          "rol": "Dirección de cámaras",
+          "posicion": "Dirección de cámaras",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-recursos-para-redes-sociales-1",
+          "equipo": "Multimedia",
+          "rol": "Recursos para Redes Sociales",
+          "posicion": "Recursos para Redes Sociales",
+          "servidorId": null
+        }
+      ]
+    },
+    {
+      "fecha": "2026-09-27",
+      "asignaciones": [
+        {
+          "slotId": "altar-direccion-de-alabanza-1",
+          "equipo": "Altar",
+          "rol": "Dirección de alabanza",
+          "posicion": "Dir 1",
+          "servidorId": "jose-vallejo"
+        },
+        {
+          "slotId": "altar-direccion-musical-1",
+          "equipo": "Altar",
+          "rol": "Dirección musical",
+          "posicion": "Dir 2",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-1",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V3",
+          "servidorId": "adriana"
+        },
+        {
+          "slotId": "altar-coro-voces-2",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V4",
+          "servidorId": "edny"
+        },
+        {
+          "slotId": "altar-coro-voces-3",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V5",
+          "servidorId": "elias"
+        },
+        {
+          "slotId": "altar-coro-voces-4",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V6",
+          "servidorId": "ruth"
+        },
+        {
+          "slotId": "altar-coro-voces-5",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V7",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-6",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V8",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-coro-voces-7",
+          "equipo": "Altar",
+          "rol": "Coro/Voces",
+          "posicion": "V9",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-piano-1",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 1",
+          "servidorId": "douglas-zuniga"
+        },
+        {
+          "slotId": "altar-piano-2",
+          "equipo": "Altar",
+          "rol": "Piano",
+          "posicion": "Piano 2",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-guitarra-acustica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra acústica",
+          "posicion": "Guitarra acústica",
+          "servidorId": "victor"
+        },
+        {
+          "slotId": "altar-guitarra-electrica-1",
+          "equipo": "Altar",
+          "rol": "Guitarra eléctrica",
+          "posicion": "Guitarra eléctrica",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-bajo-1",
+          "equipo": "Altar",
+          "rol": "Bajo",
+          "posicion": "Bajo",
+          "servidorId": null
+        },
+        {
+          "slotId": "altar-bateria-1",
+          "equipo": "Altar",
+          "rol": "Batería",
+          "posicion": "Batería",
+          "servidorId": "ronald"
+        },
+        {
+          "slotId": "multimedia-sonido-1",
+          "equipo": "Multimedia",
+          "rol": "Sonido",
+          "posicion": "Sonido",
+          "servidorId": "roberto"
+        },
+        {
+          "slotId": "multimedia-propresenter-1",
+          "equipo": "Multimedia",
+          "rol": "ProPresenter",
+          "posicion": "ProPresenter",
+          "servidorId": "angel"
+        },
+        {
+          "slotId": "multimedia-obs-1",
+          "equipo": "Multimedia",
+          "rol": "OBS",
+          "posicion": "OBS",
+          "servidorId": "kaleb"
+        },
+        {
+          "slotId": "multimedia-camara-movil-1",
+          "equipo": "Multimedia",
+          "rol": "Cámara móvil",
+          "posicion": "Cámara móvil",
+          "servidorId": "rocio-bustillo"
+        },
+        {
+          "slotId": "multimedia-direccion-de-camaras-1",
+          "equipo": "Multimedia",
+          "rol": "Dirección de cámaras",
+          "posicion": "Dirección de cámaras",
+          "servidorId": null
+        },
+        {
+          "slotId": "multimedia-recursos-para-redes-sociales-1",
+          "equipo": "Multimedia",
+          "rol": "Recursos para Redes Sociales",
+          "posicion": "Recursos para Redes Sociales",
+          "servidorId": null
+        }
+      ]
+    }
+  ],
+  "generadoEn": "2026-08-14T00:09:57.566Z",
+  "actualizadoEn": "2026-08-14T00:09:57.566Z"
+}
