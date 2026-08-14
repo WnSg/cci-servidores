@@ -1,6 +1,6 @@
 {
   "Altar": {
-    "Direccion": [
+    "AuxiliaresDireccion": [
       "Dir 1",
       "Dir 2"
     ],
@@ -36,8 +36,7 @@
   "Multimedia": [
     "Sonido",
     "ProPresenter",
-    "OBS",
-    "Dirección de cámaras",
+    "OBS/Dirección de cámaras",
     "Cámara móvil",
     "Recursos para Redes Sociales"
   ]

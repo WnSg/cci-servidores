@@ -61,7 +61,13 @@
       dashboard.hidden = false;
       planningSection.hidden = true;
       loadSavedButton.hidden = !state.planGuardado;
-      showMessage(adminStatus, "Información mensual cargada correctamente.", "success");
+      showMessage(
+        adminStatus,
+        result.planDesactualizado
+          ? "La planificación guardada usa una configuración anterior. Genera una propuesta nueva con los puestos actualizados."
+          : "Información mensual cargada correctamente.",
+        result.planDesactualizado ? "warning" : "success"
+      );
     } catch (error) {
       dashboard.hidden = true;
       showMessage(adminStatus, error.message, "error");

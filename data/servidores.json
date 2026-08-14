@@ -139,10 +139,9 @@
       "equipos": [
         "Multimedia"
       ],
-      "rolPrincipal": "OBS",
+      "rolPrincipal": "OBS/Dirección de cámaras",
       "roles": [
-        "OBS",
-        "Dirección de cámaras"
+        "OBS/Dirección de cámaras"
       ],
       "activo": true
     },
@@ -237,7 +236,7 @@
       "roles": [
         "Sonido",
         "ProPresenter",
-        "OBS",
+        "OBS/Dirección de cámaras",
         "Cámara móvil"
       ],
       "activo": true
