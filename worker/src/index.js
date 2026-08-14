@@ -218,7 +218,8 @@ async function handleAdminResumen(request, env) {
     registros: context.registros,
     rolesRequeridos: context.rolesRequeridos,
     posiciones: context.posiciones,
-    planGuardado: context.planGuardado
+    planGuardado: context.planGuardado,
+    planDesactualizado: context.planDesactualizado
   }, 200, env, request);
 }
 
@@ -316,16 +317,54 @@ async function loadPlanningContext(env, mes) {
     readGithubJson(env, planPath, null)
   ]);
 
+  const rolesRequeridos = files[2].data && typeof files[2].data === "object" ? files[2].data : {};
+  const posiciones = files[3].data && typeof files[3].data === "object" ? files[3].data : {};
+  const storedPlan = files[4].data;
+  const planIsCompatible = isPlanCompatible(storedPlan, mes, rolesRequeridos, posiciones);
+
   return {
     mes,
     servidores: normalizeServidoresData(files[0].data).servidores.filter(function (server) {
       return server.activo !== false;
     }),
     registros: normalizeDisponibilidadData(files[1].data, mes).registros,
-    rolesRequeridos: files[2].data && typeof files[2].data === "object" ? files[2].data : {},
-    posiciones: files[3].data && typeof files[3].data === "object" ? files[3].data : {},
-    planGuardado: files[4].data
+    rolesRequeridos,
+    posiciones,
+    planGuardado: planIsCompatible ? storedPlan : null,
+    planDesactualizado: Boolean(storedPlan && !planIsCompatible)
   };
+}
+
+function isPlanCompatible(plan, mes, rolesRequeridos, posiciones) {
+  if (!plan || !Array.isArray(plan.fechas)) {
+    return false;
+  }
+
+  const expectedDates = getSundaysForMonth(mes);
+  const expectedSlotIds = buildPlanningSlots(rolesRequeridos, posiciones).map(function (slot) {
+    return slot.slotId;
+  }).sort();
+
+  if (plan.fechas.length !== expectedDates.length) {
+    return false;
+  }
+
+  const daysByDate = new Map(plan.fechas.map(function (day) {
+    return [day && day.fecha, day];
+  }));
+
+  return expectedDates.every(function (date) {
+    const day = daysByDate.get(date);
+    if (!day || !Array.isArray(day.asignaciones)) {
+      return false;
+    }
+    const slotIds = day.asignaciones.map(function (assignment) {
+      return assignment && assignment.slotId;
+    }).sort();
+    return slotIds.length === expectedSlotIds.length && slotIds.every(function (slotId, index) {
+      return slotId === expectedSlotIds[index];
+    });
+  });
 }
 
 function buildAdminSummary(context) {
@@ -399,18 +438,18 @@ function getPositionsForRole(team, role, required, posiciones) {
   }
 
   const altar = posiciones && posiciones.Altar ? posiciones.Altar : {};
-  const direction = Array.isArray(altar.Direccion) ? altar.Direccion : [];
+  const directionAssistants = Array.isArray(altar.AuxiliaresDireccion) ? altar.AuxiliaresDireccion : [];
   const voices = Array.isArray(altar.Voces) ? altar.Voces : [];
   const instruments = Array.isArray(altar.Instrumentos) ? altar.Instrumentos : [];
 
   if (role === "Dirección de alabanza") {
-    return direction.slice(0, required);
+    return ["Dirección de alabanza"];
   }
   if (role === "Dirección musical") {
-    return direction.slice(1, 1 + required);
+    return ["Dirección musical"];
   }
   if (role === "Coro/Voces") {
-    return voices.slice(0, required);
+    return directionAssistants.concat(voices).slice(0, required);
   }
   if (role === "Piano") {
     return instruments.filter(function (position) {
