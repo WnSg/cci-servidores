@@ -39,6 +39,15 @@
       "actualizadoEn": "2026-08-13T23:56:15.530Z"
     },
     {
+      "servidorId": "douglas-zuniga",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-13"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-14T00:03:15.241Z"
+    },
+    {
       "servidorId": "edny",
       "vecesPuedeServir": 3,
       "fechasNoPuede": [
