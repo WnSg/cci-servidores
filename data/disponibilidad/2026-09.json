@@ -94,6 +94,15 @@
       "actualizadoEn": "2026-08-13T23:59:38.805Z"
     },
     {
+      "servidorId": "karly-torres",
+      "vecesPuedeServir": 3,
+      "fechasNoPuede": [
+        "2026-09-27"
+      ],
+      "observaciones": "",
+      "actualizadoEn": "2026-08-14T00:00:59.228Z"
+    },
+    {
       "servidorId": "roberto",
       "vecesPuedeServir": 2,
       "fechasNoPuede": [
